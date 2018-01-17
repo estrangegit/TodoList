@@ -11,6 +11,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {TodoServiceProvider} from '../services/todo-service';
+import {ModalContentPage} from '../pages/todoItem/modal-content';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {TodoServiceProvider} from '../services/todo-service';
     TodoListPage,
     TodoItemPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    ModalContentPage
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import {TodoServiceProvider} from '../services/todo-service';
     TodoListPage,
     TodoItemPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    ModalContentPage
   ],
   providers: [
     StatusBar,

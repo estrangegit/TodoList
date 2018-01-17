@@ -1,7 +1,8 @@
 import {Component, DoCheck} from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
+import {ModalController, NavController, NavParams} from 'ionic-angular';
 import {TodoServiceProvider} from '../../services/todo-service';
 import {TodoItem, TodoList} from '../model/model';
+import {ModalContentPage} from './modal-content';
 
 @Component({
   selector: 'todo-item',
@@ -13,7 +14,8 @@ export class TodoItemPage implements DoCheck{
 
   constructor(public navCtrl: NavController,
               private todoService: TodoServiceProvider,
-              private navParams: NavParams) {
+              private navParams: NavParams,
+              public modalCtrl: ModalController) {
   }
 
   ngDoCheck(): void{
@@ -32,4 +34,8 @@ export class TodoItemPage implements DoCheck{
     this.todoService.editTodo(todoList.uuid, todoItem);
   }
 
+  public addTodoItem(todoList:TodoList){
+    let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList});
+    modal.present();
+  }
 }
