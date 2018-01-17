@@ -77,7 +77,27 @@ export class TodoServiceProvider {
     let items = this.data.find(d => d.uuid == listUuid).items;
     let index = items.findIndex(value => value.uuid == uuid);
     if (index != -1) {
-      items.splice(index,1);
+      items.splice(index, 1);
     }
   }
+
+  public newTodoList(name: String){
+    let uuid = this.createUuid();
+    let todoList = <TodoList>{uuid:uuid, name: name, items: []};
+    this.data.push(todoList);
+  }
+
+  public newTodoItem(todoList: TodoList, todoItem: TodoItem){
+    let items = this.data.find(d => d.uuid == todoList.uuid).items;
+    todoItem.uuid = this.createUuid();
+    items.push(todoItem);
+  }
+
+  private createUuid(): String{
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
 }
