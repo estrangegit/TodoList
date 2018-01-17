@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Todo list
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list no-lines>
+    <button ion-item *ngFor="let item of items" (click)="itemSelected(item.list.uuid)">
+      {{ item.list.name }} ({{ item.nbUncompletedItems }})
+    </button>
+  </ion-list>
+</ion-content>

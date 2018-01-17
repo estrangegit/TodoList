@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      {{ list.name }}
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+      <ion-item-sliding *ngFor="let item of list.items">
+        <ion-item>
+          <ion-label>{{ item.name }}</ion-label>
+          <ion-toggle [checked]="item.complete"></ion-toggle>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="light" icon-start>
+            <ion-icon name="delete" (click)="deleteItem(item.uuid)"></ion-icon>
+            Delete
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+</ion-content>
