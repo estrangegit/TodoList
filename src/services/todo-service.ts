@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {TodoItem, TodoList} from "../model/model";
+import {TodoItem, TodoList} from "../pages/model/model";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/Rx';
 
@@ -55,18 +55,17 @@ export class TodoServiceProvider {
 
   }
 
-  public getList(): Observable<TodoList[]> {
+  public getTodoList(): Observable<TodoList[]> {
     return Observable.of(this.data);
   }
 
-  public getOneList(uuid:String) : Observable<TodoList> {
+  public getOneTodoList(uuid:String) : Observable<TodoList> {
     return Observable.of(this.data.find(d => d.uuid == uuid))
   }
 
   public getTodos(uuid:String) : Observable<TodoItem[]> {
     return Observable.of(this.data.find(d => d.uuid == uuid).items)
   }
-
 
   public editTodo(listUuid : String, editedItem: TodoItem) {
     let items = this.data.find(d => d.uuid == listUuid).items;

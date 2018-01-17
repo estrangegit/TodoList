@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DoCheck} from '@angular/core';
 import { NavController } from 'ionic-angular';
-import {TodoServiceProvider} from '../services/todo-service';
+import {TodoServiceProvider} from '../../services/todo-service';
 import {TodoItemPage} from '../todoItem/todoItem';
 
 @Component({
   selector: 'todo-list',
   templateUrl: 'todolist.html'
 })
-export class TodoListPage implements OnInit{
+export class TodoListPage implements DoCheck{
 
   items: any[];
 
-  ngOnInit(): void{
-    this.todoService.getList().subscribe(
+  ngDoCheck(): void{
+    this.todoService.getTodoList().subscribe(
       data => {
 
         this.items = [];
@@ -25,9 +25,7 @@ export class TodoListPage implements OnInit{
               nbUncompletedItems++;
             }
           }
-
           this.items.push({list: data[i], nbUncompletedItems: nbUncompletedItems});
-
         }
       }
     );
