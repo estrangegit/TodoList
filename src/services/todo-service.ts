@@ -67,15 +67,21 @@ export class TodoServiceProvider {
     return Observable.of(this.data.find(d => d.uuid == uuid).items)
   }
 
-  public editTodo(listUuid : String, editedItem: TodoItem) {
-    let items = this.data.find(d => d.uuid == listUuid).items;
-    let index = items.findIndex(value => value.uuid == editedItem.uuid);
-    items[index] = editedItem;
+  public newTodoItem(todoList: TodoList, todoItem: TodoItem){
+    let items = this.data.find(d => d.uuid == todoList.uuid).items;
+    todoItem.uuid = this.createUuid();
+    items.push(todoItem);
   }
 
-  public deleteTodo(listUuid: String, uuid: String) {
-    let items = this.data.find(d => d.uuid == listUuid).items;
-    let index = items.findIndex(value => value.uuid == uuid);
+  public editTodoItem(todoList : TodoList, todoItem: TodoItem) {
+    let items = this.data.find(d => d.uuid == todoList.uuid).items;
+    let index = items.findIndex(value => value.uuid == todoItem.uuid);
+    items[index] = todoItem;
+  }
+
+  public deleteTodoItem(todoList : TodoList, todoItem: TodoItem) {
+    let items = this.data.find(d => d.uuid == todoList.uuid).items;
+    let index = items.findIndex(value => value.uuid == todoItem.uuid);
     if (index != -1) {
       items.splice(index, 1);
     }
@@ -87,10 +93,16 @@ export class TodoServiceProvider {
     this.data.push(todoList);
   }
 
-  public newTodoItem(todoList: TodoList, todoItem: TodoItem){
-    let items = this.data.find(d => d.uuid == todoList.uuid).items;
-    todoItem.uuid = this.createUuid();
-    items.push(todoItem);
+  public deleteTodoList(todoList : TodoList) {
+    let index = this.data.findIndex(d => d.uuid == todoList.uuid);
+    if (index != -1) {
+      this.data.splice(index, 1);
+    }
+  }
+
+  public editTodoList(todoList : TodoList) {
+    let index = this.data.findIndex(d => d.uuid == todoList.uuid);
+    this.data[index] = todoList;
   }
 
   private createUuid(): String{

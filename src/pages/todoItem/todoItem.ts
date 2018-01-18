@@ -1,5 +1,5 @@
 import {Component, DoCheck} from '@angular/core';
-import {ModalController, NavController, NavParams} from 'ionic-angular';
+import {ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
 import {TodoServiceProvider} from '../../services/todo-service';
 import {TodoItem, TodoList} from '../model/model';
 import {ModalContentPage} from './modal-content';
@@ -26,16 +26,27 @@ export class TodoItemPage implements DoCheck{
     );
   }
 
-  public deleteItem(todoList:TodoList, todoItem:TodoItem): void{
-    this.todoService.deleteTodo(todoList.uuid, todoItem.uuid);
+  public deleteTodoItem(todoList:TodoList, todoItem:TodoItem): void{
+    this.todoService.deleteTodoItem(todoList, todoItem);
+  }
+
+  public editTodoItem(todoList:TodoList, todoItem:TodoItem, slidingItem: ItemSliding): void{
+    let todoItemTemp = <TodoItem>{uuid:todoItem.uuid, name:todoItem.name, complete:todoItem.complete};
+    let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItemTemp});
+    modal.present();
+
+    slidingItem.close();
   }
 
   public toggle(todoList:TodoList, todoItem:TodoItem):void{
-    this.todoService.editTodo(todoList.uuid, todoItem);
+    this.todoService.editTodoItem(todoList, todoItem);
   }
 
   public addTodoItem(todoList:TodoList){
-    let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList});
+    let todoItem = <TodoItem>{uuid:'', name:'', complete:false};
+    let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
   }
+
+
 }
