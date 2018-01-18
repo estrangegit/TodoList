@@ -8,15 +8,19 @@
 
 <ion-content>
     <ion-list>
-      <ion-item-sliding *ngFor="let item of list.items">
+      <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
         <ion-item>
           <ion-label>{{ item.name }}</ion-label>
           <ion-toggle (ionChange)="toggle(list, item)" [(ngModel)]="item.complete"></ion-toggle>
         </ion-item>
         <ion-item-options side="right">
-          <button ion-button (click)="deleteItem(list, item)" color="light" icon-start>
+          <button ion-button (click)="deleteTodoItem(list, item)" color="light" icon-start>
             <ion-icon name="delete"></ion-icon>
-            Delete
+            Supprimer
+          </button>
+          <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
+            <ion-icon name="edit"></ion-icon>
+            Modifier
           </button>
         </ion-item-options>
       </ion-item-sliding>

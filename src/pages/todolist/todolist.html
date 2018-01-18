@@ -7,10 +7,32 @@
 </ion-header>
 
 <ion-content padding>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of items" #slidingItem>
+      <ion-item (click)="itemSelected(item.list.uuid)">
+        <ion-label>{{ item.list.name }} (à faire: {{ item.nbUncompletedItems }})</ion-label>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button (click)="deleteTodoList(item.list)" color="light" icon-start>
+          <ion-icon name="delete"></ion-icon>
+          Supprimer
+        </button>
+        <button ion-button (click)="editTodoList(item.list, slidingItem)" icon-start>
+          <ion-icon name="edit"></ion-icon>
+          Modifier
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+<!--
   <ion-list no-lines>
     <button ion-item *ngFor="let item of items" (click)="itemSelected(item.list.uuid)">
-      {{ item.list.name }} (A faire: {{ item.nbUncompletedItems }})
+      {{ item.list.name }} (à faire: {{ item.nbUncompletedItems }})
     </button>
   </ion-list>
+-->
+
   <button ion-button color="light" block (click)="addTodoList()">Ajouter une liste</button>
 </ion-content>

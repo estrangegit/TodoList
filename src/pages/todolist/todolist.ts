@@ -2,6 +2,7 @@ import {Component, DoCheck} from '@angular/core';
 import {AlertController, NavController} from 'ionic-angular';
 import {TodoServiceProvider} from '../../services/todo-service';
 import {TodoItemPage} from '../todoItem/todoItem';
+import {TodoList} from '../model/model';
 
 @Component({
   selector: 'todo-list',
@@ -43,7 +44,7 @@ export class TodoListPage implements DoCheck{
       message: "Merci d'entrer le nom de la nouvelle Todo liste",
       inputs: [
         {
-          name: 'Nom',
+          name: 'name',
           placeholder: 'ex:course'
         },
       ],
@@ -55,7 +56,7 @@ export class TodoListPage implements DoCheck{
         {
           text: 'Enregistrer',
           handler: data => {
-            this.todoService.newTodoList(data.Nom);
+            this.todoService.newTodoList(data.name);
           }
         }
       ]
@@ -63,6 +64,36 @@ export class TodoListPage implements DoCheck{
     prompt.present();
   }
 
+  public editTodoList(todolist: TodoList):void{
+    let prompt = this.alertCtrl.create({
+      title: 'Edition de la todo liste',
+      message: "Précisez le nouveau nom",
+      inputs: [
+        {
+          name: 'name',
+          value: todolist.name.toString()
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: data => {}
+        },
+        {
+          text: 'Enregistrer',
+          handler: data => {
+            todolist.name = data.name;
+            this.todoService.editTodoList(todolist);
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
+  public deleteTodoList(todoList: TodoList): void{
+    this.todoService.deleteTodoList(todoList);
+  }
 
   public itemSelected(uuid): void{
     this.navCtrl.push(TodoItemPage, {

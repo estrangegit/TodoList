@@ -10,6 +10,8 @@ export class ModalContentPage {
 
   todoItem:TodoItem;
   todoList:TodoList;
+  newTodoItem: boolean = false;
+
 
   constructor(
     public platform: Platform,
@@ -17,8 +19,13 @@ export class ModalContentPage {
     public viewCtrl: ViewController,
     private todoService: TodoServiceProvider,
   ) {
-    this.todoItem = <TodoItem>{uuid:'', name:'', complete:false};
-    this.todoList = this.params.get('todoList')
+    this.todoItem = this.params.get('todoItem');
+    this.todoList = this.params.get('todoList');
+
+    if(this.todoItem.uuid.length == 0){
+      this.newTodoItem = true;
+    }
+
   }
 
   public cancel(){
@@ -26,9 +33,10 @@ export class ModalContentPage {
   }
 
   public save(){
-    console.log(this.todoList);
-    console.log(this.todoItem);
-    this.todoService.newTodoItem(this.todoList, this.todoItem);
+    if(this.newTodoItem)
+      this.todoService.newTodoItem(this.todoList, this.todoItem);
+    else
+      this.todoService.editTodoItem(this.todoList, this.todoItem);
     this.dismiss()
   }
 
