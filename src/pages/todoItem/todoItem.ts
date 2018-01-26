@@ -1,6 +1,6 @@
 import {Component, DoCheck} from '@angular/core';
 import {ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
-import {TodoServiceProvider} from '../../services/todo-service';
+import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItem, TodoList} from '../model/model';
 import {ModalContentPage} from './modal-content';
 

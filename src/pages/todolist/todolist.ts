@@ -1,6 +1,6 @@
 import {Component, DoCheck} from '@angular/core';
 import {AlertController, NavController} from 'ionic-angular';
-import {TodoServiceProvider} from '../../services/todo-service';
+import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItemPage} from '../todoItem/todoItem';
 import {TodoList} from '../model/model';
 

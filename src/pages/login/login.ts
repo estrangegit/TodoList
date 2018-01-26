@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { App, NavController } from 'ionic-angular';
 import firebase from 'firebase';
-import {UserDataService} from '../../services/user-data.service';
+import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {TabsPage} from '../tabs/tabs';
 
 @Component({
@@ -11,14 +11,14 @@ import {TabsPage} from '../tabs/tabs';
 export class LoginPage {
 
   constructor(public navCtrl: NavController,
-              public userDataService: UserDataService,
+              public userDataServiceProvider: UserDataServiceProvider,
               public app: App) {
     firebase.auth().onAuthStateChanged( user => {
       if (user) {
-        userDataService.setUserProfile(user);
+        userDataServiceProvider.setUserProfile(user);
         this.app.getRootNav().setRoot(TabsPage);
       } else {
-        userDataService.setUserProfile(null);
+        userDataServiceProvider.setUserProfile(null);
       }
     });
   }

@@ -12,10 +12,10 @@
   <ion-list>
     <ion-item>
       <ion-avatar item-start>
-        <img [src]="userDataService.getUserProfile().providerData[0].photoURL">
+        <img [src]="userDataServiceProvider.getUserProfile().providerData[0].photoURL">
       </ion-avatar>
-      <h2>Nom: {{ userDataService.getUserProfile().providerData[0].displayName }}</h2>
-      <h3>Email: {{ userDataService.getUserProfile().providerData[0].email }}</h3>
+      <h2>Nom: {{ userDataServiceProvider.getUserProfile().providerData[0].displayName }}</h2>
+      <h3>Email: {{ userDataServiceProvider.getUserProfile().providerData[0].email }}</h3>
     </ion-item>
   </ion-list>
 

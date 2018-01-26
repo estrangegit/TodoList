@@ -10,12 +10,13 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import {TodoServiceProvider} from '../services/todo-service';
+import {TodoServiceProvider} from '../providers/todo-service/todo-service';
 import {ModalContentPage} from '../pages/todoItem/modal-content';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {LoginPage} from '../pages/login/login';
-import {UserDataService} from '../services/user-data.service';
+import {UserDataServiceProvider} from '../providers/user-data-service/user-data-service';
 import {ProfilePage} from '../pages/profile/profile';
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 
 @NgModule({
   declarations: [
@@ -48,8 +49,9 @@ import {ProfilePage} from '../pages/profile/profile';
     StatusBar,
     SplashScreen,
     TodoServiceProvider,
-    UserDataService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    UserDataServiceProvider,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AuthServiceProvider
   ]
 })
 export class AppModule {}
