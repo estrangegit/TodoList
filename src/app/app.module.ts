@@ -12,6 +12,10 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {TodoServiceProvider} from '../services/todo-service';
 import {ModalContentPage} from '../pages/todoItem/modal-content';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+import {LoginPage} from '../pages/login/login';
+import {UserDataService} from '../services/user-data.service';
+import {ProfilePage} from '../pages/profile/profile';
 
 @NgModule({
   declarations: [
@@ -20,11 +24,14 @@ import {ModalContentPage} from '../pages/todoItem/modal-content';
     TodoItemPage,
     HomePage,
     TabsPage,
-    ModalContentPage
+    ModalContentPage,
+    LoginPage,
+    ProfilePage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AngularFireDatabaseModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -33,12 +40,15 @@ import {ModalContentPage} from '../pages/todoItem/modal-content';
     TodoItemPage,
     HomePage,
     TabsPage,
-    ModalContentPage
+    ModalContentPage,
+    LoginPage,
+    ProfilePage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     TodoServiceProvider,
+    UserDataService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
