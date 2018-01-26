@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import {HomePage} from '../home/home';
+import { App, NavController } from 'ionic-angular';
 import firebase from 'firebase';
-import {auth} from 'firebase/app';
 import {UserDataService} from '../../services/user-data.service';
+import {TabsPage} from '../tabs/tabs';
 
 @Component({
   selector: 'page-login',
@@ -12,12 +11,12 @@ import {UserDataService} from '../../services/user-data.service';
 export class LoginPage {
 
   constructor(public navCtrl: NavController,
-              public userDataService: UserDataService) {
+              public userDataService: UserDataService,
+              public app: App) {
     firebase.auth().onAuthStateChanged( user => {
       if (user) {
-        console.log('login constructor: ', user);
         userDataService.setUserProfile(user);
-        this.navCtrl.push(HomePage);
+        this.app.getRootNav().setRoot(TabsPage);
       } else {
         userDataService.setUserProfile(null);
       }
@@ -30,7 +29,6 @@ export class LoginPage {
       firebase.auth().getRedirectResult().then( result => {
         let token = result.credential.accessToken;
         let user = result.user;
-        console.log('google Login Function', token, user);
       }).catch(function(error) {
         console.log(error.message);
       });

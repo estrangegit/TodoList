@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>User Profile</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <button ion-button block (click)="logInfos()">
+    LOG INFOS
+  </button>
+
+  <ion-list>
+    <ion-item>
+      <ion-avatar item-start>
+        <img [src]="userDataService.getUserProfile().providerData[0].photoURL">
+      </ion-avatar>
+      <h2>Nom: {{ userDataService.getUserProfile().providerData[0].displayName }}</h2>
+      <h3>Email: {{ userDataService.getUserProfile().providerData[0].email }}</h3>
+    </ion-item>
+  </ion-list>
+
+  <button ion-button block (click)="googleLogout()">
+    GOOGLE LOGOUT
+  </button>
+</ion-content>

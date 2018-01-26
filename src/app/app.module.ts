@@ -15,6 +15,7 @@ import {ModalContentPage} from '../pages/todoItem/modal-content';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {LoginPage} from '../pages/login/login';
 import {UserDataService} from '../services/user-data.service';
+import {ProfilePage} from '../pages/profile/profile';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {UserDataService} from '../services/user-data.service';
     HomePage,
     TabsPage,
     ModalContentPage,
-    LoginPage
+    LoginPage,
+    ProfilePage
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,8 @@ import {UserDataService} from '../services/user-data.service';
     HomePage,
     TabsPage,
     ModalContentPage,
-    LoginPage
+    LoginPage,
+    ProfilePage
   ],
   providers: [
     StatusBar,

@@ -100,4 +100,5 @@
     </universal-links>
     <allow-navigation href="http://192.168.0.10:8100" />
     <allow-navigation href="http://192.168.0.28:8100" />
+    <allow-navigation href="http://192.168.0.14:8100" />
 </widget>

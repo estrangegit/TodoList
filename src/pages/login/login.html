@@ -5,16 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-<!--  <button ion-button block (click)="googleLogin()" *ngIf="!userProfile">-->
-  <button ion-button block (click)="googleLogin()">
-    GOOGLE LOGIN
-  </button>
-
-  <ion-card *ngIf="userDataService.getUserProfile()">
-    <ion-card-header>
-      {{ userProfile.email }}
-    </ion-card-header>
-    <ion-card-content>
-    </ion-card-content>
-  </ion-card>
+  <div class="item-avatar" (click)="googleLogin()">
+    <img src="assets/imgs/google-plus.jpg">
+  </div>
 </ion-content>
