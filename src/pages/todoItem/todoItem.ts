@@ -1,29 +1,43 @@
-import {Component, DoCheck} from '@angular/core';
-import {ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
+import {Component, OnInit} from '@angular/core';
+import {App, ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
 import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItem, TodoList} from '../model/model';
 import {ModalContentPage} from './modal-content';
+import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
+import {LoginPage} from '../login/login';
 
 @Component({
   selector: 'todo-item',
   templateUrl: 'todoitem.html'
 })
-export class TodoItemPage implements DoCheck{
+export class TodoItemPage implements OnInit{
 
   list: TodoList;
 
   constructor(public navCtrl: NavController,
               private todoService: TodoServiceProvider,
               private navParams: NavParams,
-              public modalCtrl: ModalController) {
+              public modalCtrl: ModalController,
+              public userDataServiceProvider: UserDataServiceProvider,
+              public app: App) {
   }
 
-  ngDoCheck(): void{
+  ngOnInit(){
     this.todoService.getOneTodoList(this.navParams.get('uuid')).subscribe(
       data => {
-          this.list = data;
-      }
+        this.list = data;
+      },
     );
+  }
+
+  ionViewCanEnter(): boolean {
+    let loggedIn = this.userDataServiceProvider.isLoggedIn();
+    if(!loggedIn){
+      this.app.getRootNav().setRoot(LoginPage);
+      return false;
+    }else{
+      return true;
+    }
   }
 
   public deleteTodoItem(todoList:TodoList, todoItem:TodoItem): void{
@@ -47,6 +61,4 @@ export class TodoItemPage implements DoCheck{
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
   }
-
-
 }

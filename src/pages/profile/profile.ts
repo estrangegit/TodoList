@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import {App, NavController} from 'ionic-angular';
+import {Component} from '@angular/core';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
-import {auth} from 'firebase/app';
 import {LoginPage} from '../login/login';
+import {App} from 'ionic-angular';
+import {auth} from 'firebase/app';
+import {TabsPage} from '../tabs/tabs';
 
 @Component({
   selector: 'page-profile',
@@ -10,21 +11,30 @@ import {LoginPage} from '../login/login';
 })
 export class ProfilePage {
 
-  constructor(public navCtrl: NavController,
-              public userDataServiceProvider: UserDataServiceProvider,
-              public app: App) {
-  }
-
+  constructor(public userDataServiceProvider: UserDataServiceProvider,
+              public app: App) {}
+/*
   public logInfos(){
     console.log(this.userDataServiceProvider.getUserProfile());
+  }
+*/
+
+  ionViewCanEnter(): boolean {
+    let loggedIn = this.userDataServiceProvider.isLoggedIn();
+    if(!loggedIn){
+      this.app.getRootNav().setRoot(LoginPage);
+      return false;
+    }else{
+      return true;
+    }
   }
 
   public googleLogout():void {
     auth().signOut().then(()=>{
       this.app.getRootNav().setRoot(LoginPage);
+      console.log('user logged out');
     }, error => {
       console.log(error);
     });
   }
-
 }

@@ -10,13 +10,12 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import {TodoServiceProvider} from '../providers/todo-service/todo-service';
-import {ModalContentPage} from '../pages/todoItem/modal-content';
-import {AngularFireDatabaseModule} from 'angularfire2/database';
-import {LoginPage} from '../pages/login/login';
-import {UserDataServiceProvider} from '../providers/user-data-service/user-data-service';
-import {ProfilePage} from '../pages/profile/profile';
-import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { TodoServiceProvider } from '../providers/todo-service/todo-service';
+import { ModalContentPage } from '../pages/todoItem/modal-content';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { LoginPage } from '../pages/login/login';
+import { UserDataServiceProvider } from '../providers/user-data-service/user-data-service';
+import { ProfilePage } from '../pages/profile/profile';
 
 @NgModule({
   declarations: [
@@ -50,8 +49,7 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     SplashScreen,
     TodoServiceProvider,
     UserDataServiceProvider,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthServiceProvider
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}

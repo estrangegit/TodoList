@@ -1,41 +1,39 @@
-import {Component, DoCheck} from '@angular/core';
-import {AlertController, NavController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {AlertController, App, NavController} from 'ionic-angular';
 import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItemPage} from '../todoItem/todoItem';
 import {TodoList} from '../model/model';
+import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
+import {LoginPage} from '../login/login';
 
 @Component({
   selector: 'todo-list',
   templateUrl: 'todolist.html'
 })
-export class TodoListPage implements DoCheck{
+export class TodoListPage {
 
   items: any[];
 
-  ngDoCheck(): void{
-    this.todoService.getTodoList().subscribe(
-      data => {
-
-        this.items = [];
-
-        for(let i = 0; i < data.length; i++){
-          let nbUncompletedItems = 0;
-
-          for(let j = 0; j < data[i].items.length; j++){
-            if(!data[i].items[j].complete){
-              nbUncompletedItems++;
-            }
-          }
-          this.items.push({list: data[i], nbUncompletedItems: nbUncompletedItems});
-        }
-      }
-    );
-  }
-
   constructor(public navCtrl: NavController,
               private todoService: TodoServiceProvider,
-              public alertCtrl: AlertController) {
+              public alertCtrl: AlertController,
+              public userDataServiceProvider: UserDataServiceProvider,
+              public app: App) {
 
+  }
+
+  ionViewCanEnter(): boolean {
+    let loggedIn = this.userDataServiceProvider.isLoggedIn();
+    if(!loggedIn){
+      this.app.getRootNav().setRoot(LoginPage);
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  ionViewWillEnter(){
+    this.initTodoLists();
   }
 
   public addTodoList():void{
@@ -57,6 +55,7 @@ export class TodoListPage implements DoCheck{
           text: 'Enregistrer',
           handler: data => {
             this.todoService.newTodoList(data.name);
+            this.initTodoLists();
           }
         }
       ]
@@ -93,11 +92,32 @@ export class TodoListPage implements DoCheck{
 
   public deleteTodoList(todoList: TodoList): void{
     this.todoService.deleteTodoList(todoList);
+    this.initTodoLists();
   }
 
   public itemSelected(uuid): void{
     this.navCtrl.push(TodoItemPage, {
       uuid: uuid
     })
+  }
+
+  private initTodoLists(){
+    this.todoService.getTodoList().subscribe(
+      data => {
+
+        this.items = [];
+
+        for(let i = 0; i < data.length; i++){
+          let nbUncompletedItems = 0;
+
+          for(let j = 0; j < data[i].items.length; j++){
+            if(!data[i].items[j].complete){
+              nbUncompletedItems++;
+            }
+          }
+          this.items.push({list: data[i], nbUncompletedItems: nbUncompletedItems});
+        }
+      }
+    );
   }
 }
