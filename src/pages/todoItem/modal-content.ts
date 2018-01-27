@@ -1,7 +1,7 @@
 import {NavParams, Platform, ViewController} from 'ionic-angular';
 import {TodoItem, TodoList} from '../model/model';
 import {Component} from '@angular/core';
-import {TodoServiceProvider} from '../../services/todo-service';
+import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 
 @Component({
   templateUrl: 'modal-content.html'
