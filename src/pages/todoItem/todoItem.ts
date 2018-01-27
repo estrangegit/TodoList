@@ -5,6 +5,7 @@ import {TodoItem, TodoList} from '../model/model';
 import {ModalContentPage} from './modal-content';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
+import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 
 @Component({
   selector: 'todo-item',
@@ -12,22 +13,18 @@ import {LoginPage} from '../login/login';
 })
 export class TodoItemPage implements OnInit{
 
-  list: TodoList;
+  public list:any;
 
   constructor(public navCtrl: NavController,
               private todoService: TodoServiceProvider,
               private navParams: NavParams,
               public modalCtrl: ModalController,
               public userDataServiceProvider: UserDataServiceProvider,
-              public app: App) {
-  }
+              public app: App,
+              public databaseServiceProvider: DatabaseServiceProvider) {}
 
   ngOnInit(){
-    this.todoService.getOneTodoList(this.navParams.get('uuid')).subscribe(
-      data => {
-        this.list = data;
-      },
-    );
+    this.list = this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid'))[1];
   }
 
   ionViewCanEnter(): boolean {
@@ -52,8 +49,8 @@ export class TodoItemPage implements OnInit{
     slidingItem.close();
   }
 
-  public toggle(todoList:TodoList, todoItem:TodoItem):void{
-    this.todoService.editTodoItem(todoList, todoItem);
+  public toggle(todoList: TodoList, todoItem:TodoItem):void{
+    this.databaseServiceProvider.editTodoItem(todoList, todoItem);
   }
 
   public addTodoItem(todoList:TodoList){

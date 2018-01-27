@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {AlertController, App, NavController} from 'ionic-angular';
-import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItemPage} from '../todoItem/todoItem';
 import {TodoList} from '../model/model';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
+import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 
 @Component({
   selector: 'todo-list',
@@ -15,12 +15,10 @@ export class TodoListPage {
   items: any[];
 
   constructor(public navCtrl: NavController,
-              private todoService: TodoServiceProvider,
               public alertCtrl: AlertController,
               public userDataServiceProvider: UserDataServiceProvider,
-              public app: App) {
-
-  }
+              public app: App,
+              public databaseServiceProvider: DatabaseServiceProvider) {}
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
@@ -34,6 +32,7 @@ export class TodoListPage {
 
   ionViewWillEnter(){
     this.initTodoLists();
+
   }
 
   public addTodoList():void{
@@ -54,7 +53,7 @@ export class TodoListPage {
         {
           text: 'Enregistrer',
           handler: data => {
-            this.todoService.newTodoList(data.name);
+            this.databaseServiceProvider.newTodoList(data.name);
             this.initTodoLists();
           }
         }
@@ -81,8 +80,7 @@ export class TodoListPage {
         {
           text: 'Enregistrer',
           handler: data => {
-            todolist.name = data.name;
-            this.todoService.editTodoList(todolist);
+            this.databaseServiceProvider.editTodoList(todolist, data.name);
           }
         }
       ]
@@ -91,7 +89,7 @@ export class TodoListPage {
   }
 
   public deleteTodoList(todoList: TodoList): void{
-    this.todoService.deleteTodoList(todoList);
+    this.databaseServiceProvider.deleteTodoList(todoList);
     this.initTodoLists();
   }
 
@@ -102,17 +100,20 @@ export class TodoListPage {
   }
 
   private initTodoLists(){
-    this.todoService.getTodoList().subscribe(
+    this.databaseServiceProvider.getTodoList().subscribe(
       data => {
 
         this.items = [];
 
         for(let i = 0; i < data.length; i++){
+
           let nbUncompletedItems = 0;
 
-          for(let j = 0; j < data[i].items.length; j++){
-            if(!data[i].items[j].complete){
-              nbUncompletedItems++;
+          if(data[i].items){
+            for(let j = 0; j < data[i].items.length; j++){
+              if(!data[i].items[j].complete){
+                nbUncompletedItems++;
+              }
             }
           }
           this.items.push({list: data[i], nbUncompletedItems: nbUncompletedItems});

@@ -51,9 +51,7 @@ export class TodoServiceProvider {
     }
   ];
 
-  constructor() {
-
-  }
+  constructor() {}
 
   public getTodoList(): Observable<TodoList[]> {
     return Observable.of(this.data);
@@ -111,5 +109,4 @@ export class TodoServiceProvider {
         return v.toString(16);
       });
     }
-
 }
