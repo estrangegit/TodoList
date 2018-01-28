@@ -3,7 +3,6 @@ import {UserDataServiceProvider} from '../../providers/user-data-service/user-da
 import {LoginPage} from '../login/login';
 import {App} from 'ionic-angular';
 import {auth} from 'firebase/app';
-import {TabsPage} from '../tabs/tabs';
 
 @Component({
   selector: 'page-profile',

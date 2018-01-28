@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AlertController, App, NavController} from 'ionic-angular';
+import {AlertController, App, ItemSliding, NavController} from 'ionic-angular';
 import {TodoItemPage} from '../todoItem/todoItem';
 import {TodoList} from '../model/model';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
@@ -32,7 +32,6 @@ export class TodoListPage {
 
   ionViewWillEnter(){
     this.initTodoLists();
-
   }
 
   public addTodoList():void{
@@ -62,7 +61,7 @@ export class TodoListPage {
     prompt.present();
   }
 
-  public editTodoList(todolist: TodoList):void{
+  public editTodoList(todolist: TodoList, slidingItem: ItemSliding):void{
     let prompt = this.alertCtrl.create({
       title: 'Edition de la todo liste',
       message: "Précisez le nouveau nom",
@@ -80,7 +79,8 @@ export class TodoListPage {
         {
           text: 'Enregistrer',
           handler: data => {
-            this.databaseServiceProvider.editTodoList(todolist, data.name);
+            this.databaseServiceProvider.editTodoListName(todolist, data.name);
+            slidingItem.close();
           }
         }
       ]
@@ -102,13 +102,9 @@ export class TodoListPage {
   private initTodoLists(){
     this.databaseServiceProvider.getTodoList().subscribe(
       data => {
-
         this.items = [];
-
         for(let i = 0; i < data.length; i++){
-
           let nbUncompletedItems = 0;
-
           if(data[i].items){
             for(let j = 0; j < data[i].items.length; j++){
               if(!data[i].items[j].complete){

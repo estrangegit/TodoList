@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {AngularFireDatabase, AngularFireList} from 'angularfire2/database';
+import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/Observable";
-import {TodoItem, TodoList} from '../../pages/model/model';
+import {TodoList} from '../../pages/model/model';
 import * as firebase from 'firebase/app';
 
 @Injectable()
@@ -26,28 +26,63 @@ export class DatabaseServiceProvider {
   }
 
   public deleteTodoList(todoList : TodoList) {
-    this._todoRef.orderByChild("uuid").equalTo(todoList.uuid).on("value", function(snapshot){
+    this._todoRef.orderByChild("uuid").equalTo(todoList.uuid).once("value", function(snapshot){
       snapshot.forEach(function(data){
         firebase.database().ref('/todolists').child(data.key).remove();
       })
     });
   }
 
-  public editTodoList(todoList : TodoList, name) {
+  public editTodoListName(todoList, name) {
     todoList.name = name;
+    this.editTodoList(todoList);
   }
 
   public getOneTodoList(uuid){
     return this.afDatabase.list('/todolists', ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
   }
 
-  public editTodoItem(todoList, todoItem) {
-    var updates = {};
-    updates['/todolists/' + todoList.uuid + '/items'] = postData;
-    updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+  public editTodoList(todoList) {
+    this._todoRef
+      .orderByChild("uuid")
+      .equalTo(todoList.uuid)
+      .once("value")
+      .then(function(snapshot){
+        snapshot.forEach(function(snapChild) {
+          snapChild.ref.set({
+            name: todoList.name,
+            uuid: todoList.uuid,
+            items: todoList.items
+          });
+        });
+      })
+  }
 
-    firebase.database().ref('/todolists').update()
+  public newTodoItem(todoList, todoItem){
 
+    todoItem.uuid = this.createUuid();
+
+    if(todoList.items == false){
+      todoList.items = [];
+    }
+
+    todoList.items.push(todoItem);
+    this.editTodoList(todoList);
+
+  }
+
+  public editTodoItem(todoList, todoItem){
+    let index = todoList.items.findIndex(value => value.uuid == todoItem.uuid);
+    todoList.items[index] = todoItem;
+    this.editTodoList(todoList);
+  }
+
+  public deleteTodoItem(todoList, todoItem) {
+    let index = todoList.items.findIndex(value => value.uuid == todoItem.uuid);
+    if (index != -1) {
+      todoList.items.splice(index, 1);
+    }
+    this.editTodoList(todoList);
   }
 
   private createUuid(): String{

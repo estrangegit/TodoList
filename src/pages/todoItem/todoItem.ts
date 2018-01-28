@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {App, ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
-import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {TodoItem, TodoList} from '../model/model';
 import {ModalContentPage} from './modal-content';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
@@ -16,7 +15,6 @@ export class TodoItemPage implements OnInit{
   public list:any;
 
   constructor(public navCtrl: NavController,
-              private todoService: TodoServiceProvider,
               private navParams: NavParams,
               public modalCtrl: ModalController,
               public userDataServiceProvider: UserDataServiceProvider,
@@ -39,7 +37,7 @@ export class TodoItemPage implements OnInit{
   }
 
   public deleteTodoItem(todoList:TodoList, todoItem:TodoItem): void{
-    this.todoService.deleteTodoItem(todoList, todoItem);
+    this.databaseServiceProvider.deleteTodoItem(todoList, todoItem);
   }
 
   public editTodoItem(todoList:TodoList, todoItem:TodoItem, slidingItem: ItemSliding): void{
@@ -50,8 +48,8 @@ export class TodoItemPage implements OnInit{
     slidingItem.close();
   }
 
-  public toggle(todoList: TodoList, todoItem:TodoItem):void{
-        this.databaseServiceProvider.editTodoItem(todoList, todoItem);
+  public toggle(todoList):void{
+    this.databaseServiceProvider.editTodoList(todoList);
   }
 
   public addTodoItem(todoList:TodoList){
