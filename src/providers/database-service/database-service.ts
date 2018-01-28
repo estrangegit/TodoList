@@ -26,11 +26,15 @@ export class DatabaseServiceProvider {
   }
 
   public deleteTodoList(todoList : TodoList) {
-    this._todoRef.orderByChild("uuid").equalTo(todoList.uuid).once("value", function(snapshot){
-      snapshot.forEach(function(data){
-        firebase.database().ref('/todolists').child(data.key).remove();
+    this._todoRef
+      .orderByChild("uuid")
+      .equalTo(todoList.uuid)
+      .once("value")
+      .then(function(snapshot){
+        snapshot.forEach(function(snapChild) {
+          snapChild.ref.set(null);
+        });
       })
-    });
   }
 
   public editTodoListName(todoList, name) {

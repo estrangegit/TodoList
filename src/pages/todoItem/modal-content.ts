@@ -1,7 +1,6 @@
 import {NavParams, Platform, ViewController} from 'ionic-angular';
 import {TodoItem, TodoList} from '../model/model';
 import {Component} from '@angular/core';
-import {TodoServiceProvider} from '../../providers/todo-service/todo-service';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 
 @Component({
@@ -13,12 +12,10 @@ export class ModalContentPage {
   todoList:TodoList;
   newTodoItem: boolean = false;
 
-
   constructor(
     public platform: Platform,
     public params: NavParams,
     public viewCtrl: ViewController,
-    private todoService: TodoServiceProvider,
     public databaseServiceProvider: DatabaseServiceProvider) {
 
     this.todoItem = this.params.get('todoItem');
@@ -27,7 +24,6 @@ export class ModalContentPage {
     if(this.todoItem.uuid.length == 0){
       this.newTodoItem = true;
     }
-
   }
 
   public cancel(){
