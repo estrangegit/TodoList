@@ -24,7 +24,8 @@ export class TodoItemPage implements OnInit{
               public databaseServiceProvider: DatabaseServiceProvider) {}
 
   ngOnInit(){
-    this.list = this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid'))[1];
+    this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
+      data => {this.list = data[0]});
   }
 
   ionViewCanEnter(): boolean {
@@ -50,7 +51,7 @@ export class TodoItemPage implements OnInit{
   }
 
   public toggle(todoList: TodoList, todoItem:TodoItem):void{
-    this.databaseServiceProvider.editTodoItem(todoList, todoItem);
+        this.databaseServiceProvider.editTodoItem(todoList, todoItem);
   }
 
   public addTodoItem(todoList:TodoList){

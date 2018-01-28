@@ -37,32 +37,17 @@ export class DatabaseServiceProvider {
     todoList.name = name;
   }
 
-  public getOneTodoList(uuid:String){
-    let todoList;
-    this._todoRef.orderByChild("uuid").equalTo(uuid).once("value", function(snapshot){
-      todoList = snapshot.val();
-    });
-    return todoList;
+  public getOneTodoList(uuid){
+    return this.afDatabase.list('/todolists', ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
   }
 
-  public editTodoItem(todoList: TodoList, todoItem: TodoItem) {
-    let todoLists;
+  public editTodoItem(todoList, todoItem) {
+    var updates = {};
+    updates['/todolists/' + todoList.uuid + '/items'] = postData;
+    updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 
-    this.afDatabase.list('/todolists').valueChanges().subscribe(
-      data => {
-        todoLists = data;
-      }
-    );
-    console.log(todoLists);
-/*
-    console.log(this._todoRef);
+    firebase.database().ref('/todolists').update()
 
-    this._todoRef.orderByChild("uuid")
-        .equalTo(todoList.uuid)
-        .once("value", function(snapshot){
-      console.log(snapshot.val);
-    });
-*/
   }
 
   private createUuid(): String{

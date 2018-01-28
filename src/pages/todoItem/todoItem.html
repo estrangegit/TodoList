@@ -1,17 +1,18 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
+    <ion-title *ngIf="list">
       {{ list.name }}
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-    <ion-list>
+    <ion-list *ngIf="list">
       <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
         <ion-item>
           <ion-label>{{ item.name }}</ion-label>
-          <ion-toggle (ionChange)="toggle(list, item)" [(ngModel)]="item.complete"></ion-toggle>
+          <!--<ion-toggle (ionChange)="toggle(list, item)" [(ngModel)]="item.complete"></ion-toggle>-->
+          <ion-toggle (ionChange)="toggle()" [(ngModel)]="item.complete"></ion-toggle>
         </ion-item>
         <ion-item-options side="right">
           <button ion-button (click)="deleteTodoItem(list, item)" color="light" icon-start>
