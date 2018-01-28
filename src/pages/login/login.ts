@@ -10,6 +10,8 @@ import firebase from 'firebase';
 })
 export class LoginPage {
 
+  todoLists: any;
+
   constructor(public userDataServiceProvider: UserDataServiceProvider,
               public app: App) {
 

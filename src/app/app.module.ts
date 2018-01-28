@@ -16,6 +16,17 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { LoginPage } from '../pages/login/login';
 import { UserDataServiceProvider } from '../providers/user-data-service/user-data-service';
 import { ProfilePage } from '../pages/profile/profile';
+import { AngularFireModule } from 'angularfire2';
+import { DatabaseServiceProvider } from '../providers/database-service/database-service';
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
+  authDomain: "todolist-7301c.firebaseapp.com",
+  databaseURL: "https://todolist-7301c.firebaseio.com",
+  projectId: "todolist-7301c",
+  storageBucket: "todolist-7301c.appspot.com",
+  messagingSenderId: "724673715119"
+};
 
 @NgModule({
   declarations: [
@@ -31,6 +42,7 @@ import { ProfilePage } from '../pages/profile/profile';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule
   ],
   bootstrap: [IonicApp],
@@ -49,7 +61,8 @@ import { ProfilePage } from '../pages/profile/profile';
     SplashScreen,
     TodoServiceProvider,
     UserDataServiceProvider,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    DatabaseServiceProvider
   ]
 })
 export class AppModule {}
