@@ -74,7 +74,9 @@ export class TodoListPage {
       buttons: [
         {
           text: 'Annuler',
-          handler: data => {}
+          handler: data => {
+            slidingItem.close();
+          }
         },
         {
           text: 'Enregistrer',
@@ -88,9 +90,28 @@ export class TodoListPage {
     prompt.present();
   }
 
-  public deleteTodoList(todoList: TodoList): void{
-    this.databaseServiceProvider.deleteTodoList(todoList);
-    this.initTodoLists();
+  public deleteTodoList(todoList: TodoList,  slidingItem: ItemSliding): void{
+    let alert = this.alertCtrl.create({
+      title: 'Confirmation de la suppression',
+      message: 'Voulez-vous supprimer cette liste?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            slidingItem.close();
+          }
+        },
+        {
+          text: 'Confirmer',
+          handler: () => {
+            this.databaseServiceProvider.deleteTodoList(todoList);
+            this.initTodoLists();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   public itemSelected(uuid): void{
