@@ -5,6 +5,7 @@ import {TodoList} from '../model/model';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
+import {SpeechRecognition} from '@ionic-native/speech-recognition';
 
 @Component({
   selector: 'todo-list',
@@ -13,13 +14,27 @@ import {DatabaseServiceProvider} from '../../providers/database-service/database
 export class TodoListPage {
 
   items: any[];
+  isListening: boolean = false;
+  options: any;
+
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public userDataServiceProvider: UserDataServiceProvider,
               public app: App,
-              public databaseServiceProvider: DatabaseServiceProvider) {}
+              public databaseServiceProvider: DatabaseServiceProvider,
+              public speechRecognition: SpeechRecognition) {
 
+    this.options = {
+      language: "fr-FR",
+      matches: 3,
+      prompt: "Prompt",
+      showPopup: true,
+      showPartial: false
+    }
+  }
+
+/*
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
     if(!loggedIn){
@@ -29,9 +44,16 @@ export class TodoListPage {
       return true;
     }
   }
+*/
 
   ionViewWillEnter(){
     this.initTodoLists();
+
+// Check if speechRecognition feature is available
+    this.speechRecognition.isRecognitionAvailable()
+      .then((available: boolean) => {
+        available ? console.log('SpeechRecognition available') : console.log('SpeechRecognition unAvailable');
+      })
   }
 
   public addTodoList():void{
@@ -137,5 +159,40 @@ export class TodoListPage {
         }
       }
     );
+  }
+
+
+  public listenAfterPermissionGranted():void {
+    this.speechRecognition.startListening(this.options)
+      .subscribe(
+        (matches: Array<string>) => {
+            console.log(matches);
+            let match = matches[0];
+            let firstWord = match.substr(0, match.indexOf(" "));
+            let listName = match.substr(match.indexOf(" ")+1);
+
+            if(firstWord.toLowerCase()=='ajouter'){
+              listName = listName.charAt(0).toUpperCase() + listName.slice(1);
+              this.databaseServiceProvider.newTodoList(listName);
+              this.initTodoLists();
+            }else if(firstWord.toLowerCase()=='supprimer'){
+              for(let i = 0; i < this.items.length; i++){
+                if(listName.toLowerCase()==this.items[i].list.name.toLowerCase()){
+                  this.databaseServiceProvider.deleteTodoList(this.items[i].list);
+                  break;
+                }
+              }
+            }
+          },
+        (onerror) => console.log('error:', onerror)
+      )
+  }
+
+  public listen(): void {
+    this.speechRecognition.requestPermission()
+      .then(
+        () => {console.log('Speech permission granted'); this.listenAfterPermissionGranted()},
+        () => {console.log('Speech permission denied')}
+      )
   }
 }

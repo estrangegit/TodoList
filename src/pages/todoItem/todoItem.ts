@@ -26,7 +26,7 @@ export class TodoItemPage implements OnInit{
     this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
       data => {this.list = data[0]});
   }
-
+/*
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
     if(!loggedIn){
@@ -36,6 +36,7 @@ export class TodoItemPage implements OnInit{
       return true;
     }
   }
+*/
 
   public deleteTodoItem(todoList:TodoList, todoItem:TodoItem, slidingItem: ItemSliding): void{
     let alert = this.alertCtrl.create({

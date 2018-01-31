@@ -14,7 +14,7 @@ export class LoginPage {
 
   constructor(public userDataServiceProvider: UserDataServiceProvider,
               public app: App) {
-
+/*
     firebase.auth().onAuthStateChanged( user => {
       if (user) {
         this.userDataServiceProvider.setUserProfile(user);
@@ -25,9 +25,13 @@ export class LoginPage {
         this.userDataServiceProvider.setLoggedIn(false);
       }
     });
+*/
   }
 
   public googleLogin():void {
+
+    this.app.getRootNav().setRoot(TabsPage);
+/*
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider).then( () => {
       firebase.auth().getRedirectResult().then( result => {
@@ -38,5 +42,6 @@ export class LoginPage {
         console.log(error.message);
       });
     });
+*/
   }
 }
