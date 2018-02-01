@@ -84,7 +84,10 @@ export class DatabaseServiceProvider {
   public deleteTodoItem(todoList, todoItem) {
     let index = todoList.items.findIndex(value => value.uuid == todoItem.uuid);
     if (index != -1) {
-      todoList.items.splice(index, 1);
+      if(todoList.items.length > 1)
+        todoList.items.splice(index, 1);
+      else
+        todoList.items = false;
     }
     this.editTodoList(todoList);
   }

@@ -18,6 +18,7 @@ import { UserDataServiceProvider } from '../providers/user-data-service/user-dat
 import { ProfilePage } from '../pages/profile/profile';
 import { AngularFireModule } from 'angularfire2';
 import { DatabaseServiceProvider } from '../providers/database-service/database-service';
+import {SpeechRecognition} from '@ionic-native/speech-recognition';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
@@ -61,6 +62,7 @@ export const firebaseConfig = {
     SplashScreen,
     TodoServiceProvider,
     UserDataServiceProvider,
+    SpeechRecognition,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DatabaseServiceProvider
   ]

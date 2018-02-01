@@ -21,4 +21,5 @@ export class HomePage {
       return true;
     }
   }
+
 }

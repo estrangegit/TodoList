@@ -5,6 +5,8 @@ import {ModalContentPage} from './modal-content';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
+import {SpeechRecognition} from '@ionic-native/speech-recognition';
+import {options} from '../../config/speechRecognitionConfig';
 
 @Component({
   selector: 'todo-item',
@@ -20,7 +22,8 @@ export class TodoItemPage implements OnInit{
               public modalCtrl: ModalController,
               public userDataServiceProvider: UserDataServiceProvider,
               public app: App,
-              public databaseServiceProvider: DatabaseServiceProvider) {}
+              public databaseServiceProvider: DatabaseServiceProvider,
+              public speechRecognition: SpeechRecognition) {}
 
   ngOnInit(){
     this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
@@ -77,4 +80,47 @@ export class TodoItemPage implements OnInit{
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
   }
+
+  public listenAfterPermissionGranted():void {
+    this.speechRecognition.startListening(options)
+      .subscribe(
+        (matches: Array<string>) => {
+          let match = matches[0];
+          let firstWord = match.substr(0, match.indexOf(" "));
+          let itemName = match.substr(match.indexOf(" ")+1);
+
+          if(firstWord.toLowerCase()=='ajouter'){
+            itemName = itemName.charAt(0).toUpperCase() + itemName.slice(1);
+            let todoItem = <TodoItem>{uuid:'', name:itemName, complete:false};
+            this.databaseServiceProvider.newTodoItem(this.list, todoItem);
+          }else if(firstWord.toLowerCase()=='supprimer'){
+            let itemNames = [];
+
+            for(let i = 0; i < matches.length; i++){
+              itemNames.push(matches[i].substr(matches[i].indexOf(" ")+1));
+            }
+            let abort = false;
+            for(let i = 0; i < itemNames.length && !abort; i++){
+              for(let j = 0; j < this.list.items.length && !abort; j++){
+                if(itemNames[i].toLowerCase()==this.list.items[j].name.toLowerCase()){
+                  this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                  abort = true;
+                }
+              }
+            }
+
+          }
+        },
+        (onerror) => console.log('error:', onerror)
+      )
+  }
+
+  public listen(): void {
+    this.speechRecognition.requestPermission()
+      .then(
+        () => {console.log('Speech permission granted'); this.listenAfterPermissionGranted()},
+        () => {console.log('Speech permission denied')}
+      )
+  }
+
 }

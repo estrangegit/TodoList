@@ -5,6 +5,8 @@ import {TodoList} from '../model/model';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
+import {SpeechRecognition} from '@ionic-native/speech-recognition';
+import {options} from '../../config/speechRecognitionConfig';
 
 @Component({
   selector: 'todo-list',
@@ -13,12 +15,15 @@ import {DatabaseServiceProvider} from '../../providers/database-service/database
 export class TodoListPage {
 
   items: any[];
+  isListening: boolean = false;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public userDataServiceProvider: UserDataServiceProvider,
               public app: App,
-              public databaseServiceProvider: DatabaseServiceProvider) {}
+              public databaseServiceProvider: DatabaseServiceProvider,
+              public speechRecognition: SpeechRecognition) {
+  }
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
@@ -32,6 +37,12 @@ export class TodoListPage {
 
   ionViewWillEnter(){
     this.initTodoLists();
+
+// Check if speechRecognition feature is available
+    this.speechRecognition.isRecognitionAvailable()
+      .then((available: boolean) => {
+        available ? console.log('SpeechRecognition available') : console.log('SpeechRecognition unAvailable');
+      })
   }
 
   public addTodoList():void{
@@ -53,7 +64,6 @@ export class TodoListPage {
           text: 'Enregistrer',
           handler: data => {
             this.databaseServiceProvider.newTodoList(data.name);
-            this.initTodoLists();
           }
         }
       ]
@@ -106,7 +116,6 @@ export class TodoListPage {
           text: 'Confirmer',
           handler: () => {
             this.databaseServiceProvider.deleteTodoList(todoList);
-            this.initTodoLists();
           }
         }
       ]
@@ -137,5 +146,48 @@ export class TodoListPage {
         }
       }
     );
+  }
+
+
+  public listenAfterPermissionGranted():void {
+    this.speechRecognition.startListening(options)
+      .subscribe(
+        (matches: Array<string>) => {
+            let match = matches[0];
+            let firstWord = match.substr(0, match.indexOf(" "));
+            let listName = match.substr(match.indexOf(" ")+1);
+
+            if(firstWord.toLowerCase()=='ajouter'){
+              listName = listName.charAt(0).toUpperCase() + listName.slice(1);
+              this.databaseServiceProvider.newTodoList(listName);
+            }else if(firstWord.toLowerCase()=='supprimer'){
+
+              let listNames = [];
+
+              for(let i = 0; i < matches.length; i++){
+                listNames.push(matches[i].substr(matches[i].indexOf(" ")+1));
+              }
+
+              let abort = false;
+              for(let i = 0; i < listNames.length && !abort; i++){
+                for(let j = 0; j < this.items.length && !abort; j++){
+                  if(listNames[i].toLowerCase()==this.items[j].list.name.toLowerCase()){
+                    this.databaseServiceProvider.deleteTodoList(this.items[j].list);
+                    abort = true;
+                  }
+                }
+              }
+            }
+          },
+        (onerror) => console.log('error:', onerror)
+      )
+  }
+
+  public listen(): void {
+    this.speechRecognition.requestPermission()
+      .then(
+        () => {console.log('Speech permission granted'); this.listenAfterPermissionGranted()},
+        () => {console.log('Speech permission denied')}
+      )
   }
 }
