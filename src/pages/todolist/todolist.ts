@@ -6,6 +6,7 @@ import {UserDataServiceProvider} from '../../providers/user-data-service/user-da
 import {LoginPage} from '../login/login';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
+import {options} from '../../config/speechRecognitionConfig';
 
 @Component({
   selector: 'todo-list',
@@ -15,8 +16,6 @@ export class TodoListPage {
 
   items: any[];
   isListening: boolean = false;
-  options: any;
-
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -24,17 +23,8 @@ export class TodoListPage {
               public app: App,
               public databaseServiceProvider: DatabaseServiceProvider,
               public speechRecognition: SpeechRecognition) {
-
-    this.options = {
-      language: "fr-FR",
-      matches: 3,
-      prompt: "Prompt",
-      showPopup: true,
-      showPartial: false
-    }
   }
 
-/*
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
     if(!loggedIn){
@@ -44,7 +34,6 @@ export class TodoListPage {
       return true;
     }
   }
-*/
 
   ionViewWillEnter(){
     this.initTodoLists();
@@ -75,7 +64,6 @@ export class TodoListPage {
           text: 'Enregistrer',
           handler: data => {
             this.databaseServiceProvider.newTodoList(data.name);
-            this.initTodoLists();
           }
         }
       ]
@@ -128,7 +116,6 @@ export class TodoListPage {
           text: 'Confirmer',
           handler: () => {
             this.databaseServiceProvider.deleteTodoList(todoList);
-            this.initTodoLists();
           }
         }
       ]
@@ -163,10 +150,9 @@ export class TodoListPage {
 
 
   public listenAfterPermissionGranted():void {
-    this.speechRecognition.startListening(this.options)
+    this.speechRecognition.startListening(options)
       .subscribe(
         (matches: Array<string>) => {
-            console.log(matches);
             let match = matches[0];
             let firstWord = match.substr(0, match.indexOf(" "));
             let listName = match.substr(match.indexOf(" ")+1);
@@ -174,12 +160,21 @@ export class TodoListPage {
             if(firstWord.toLowerCase()=='ajouter'){
               listName = listName.charAt(0).toUpperCase() + listName.slice(1);
               this.databaseServiceProvider.newTodoList(listName);
-              this.initTodoLists();
             }else if(firstWord.toLowerCase()=='supprimer'){
-              for(let i = 0; i < this.items.length; i++){
-                if(listName.toLowerCase()==this.items[i].list.name.toLowerCase()){
-                  this.databaseServiceProvider.deleteTodoList(this.items[i].list);
-                  break;
+
+              let listNames = [];
+
+              for(let i = 0; i < matches.length; i++){
+                listNames.push(matches[i].substr(matches[i].indexOf(" ")+1));
+              }
+
+              let abort = false;
+              for(let i = 0; i < listNames.length && !abort; i++){
+                for(let j = 0; j < this.items.length && !abort; j++){
+                  if(listNames[i].toLowerCase()==this.items[j].list.name.toLowerCase()){
+                    this.databaseServiceProvider.deleteTodoList(this.items[j].list);
+                    abort = true;
+                  }
                 }
               }
             }
