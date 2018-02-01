@@ -12,11 +12,6 @@ export class ProfilePage {
 
   constructor(public userDataServiceProvider: UserDataServiceProvider,
               public app: App) {}
-/*
-  public logInfos(){
-    console.log(this.userDataServiceProvider.getUserProfile());
-  }
-*/
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();

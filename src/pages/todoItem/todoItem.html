@@ -6,8 +6,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-    <ion-list *ngIf="list">
+<ion-content padding>
+    <ion-list *ngIf="list && list.items">
       <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
         <ion-item>
           <ion-label>{{ item.name }}</ion-label>
@@ -24,4 +24,12 @@
       </ion-item-sliding>
     </ion-list>
   <button ion-button color="light" block (click)="addTodoItem(list)">Ajouter un item</button>
+
+  <button ion-button block (click)="listen()">
+    <div>
+      <ion-icon name="mic">
+        <label>Parle-moi</label>
+      </ion-icon>
+    </div>
+  </button>
 </ion-content>
