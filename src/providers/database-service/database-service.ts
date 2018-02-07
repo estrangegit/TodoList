@@ -10,8 +10,7 @@ export class DatabaseServiceProvider {
   private _todoRef: any;
   private _path: string = '';
 
-  constructor(public afDatabase: AngularFireDatabase) {
-  }
+  constructor(public afDatabase: AngularFireDatabase) {}
 
   public getTodoList(): Observable<any[]> {
     return this.afDatabase.list(this._path).valueChanges();
@@ -99,13 +98,11 @@ export class DatabaseServiceProvider {
 
   public initPath(uid:string){
     this._path = '/users/' + uid + '/todolists';
-    console.log(this._path);
   }
 
   public initTodoRef(uid:string){
     let path = '/users/' + uid + '/todolists';
     this._todoRef = firebase.database().ref(path);
-    console.log(this._todoRef);
   }
 
 }
