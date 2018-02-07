@@ -15,7 +15,8 @@ export class ProfilePage {
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
-    if(!loggedIn){
+    let disconnectedMode = this.userDataServiceProvider.isDisconnectedMode();
+    if(!loggedIn && !disconnectedMode){
       this.app.getRootNav().setRoot(LoginPage);
       return false;
     }else{
@@ -30,5 +31,10 @@ export class ProfilePage {
     }, error => {
       console.log(error);
     });
+  }
+
+  public connectedMode():void {
+    this.userDataServiceProvider.setDisconnectedMode(false);
+    this.app.getRootNav().setRoot(LoginPage);
   }
 }

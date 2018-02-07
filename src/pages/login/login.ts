@@ -45,4 +45,10 @@ export class LoginPage {
       });
     });
   }
+
+  public disconnectedMode():void {
+     this.userDataServiceProvider.setDisconnectedMode(true);
+     this.app.getRootNav().setRoot(TabsPage);
+  }
+
 }

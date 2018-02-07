@@ -32,7 +32,8 @@ export class TodoItemPage implements OnInit{
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
-    if(!loggedIn){
+    let disconnectedMode = this.userDataServiceProvider.isDisconnectedMode();
+    if(!loggedIn && !disconnectedMode){
       this.app.getRootNav().setRoot(LoginPage);
       return false;
     }else{
