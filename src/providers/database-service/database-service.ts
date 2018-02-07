@@ -7,16 +7,14 @@ import * as firebase from 'firebase/app';
 @Injectable()
 export class DatabaseServiceProvider {
 
-  private _db: any;
   private _todoRef: any;
+  private _path: string = '';
 
   constructor(public afDatabase: AngularFireDatabase) {
-    this._db = firebase.database().ref('/');
-    this._todoRef = firebase.database().ref('/todolists');
   }
 
   public getTodoList(): Observable<any[]> {
-    return this.afDatabase.list('/todolists').valueChanges();
+    return this.afDatabase.list(this._path).valueChanges();
   }
 
   public newTodoList(name: String){
@@ -43,7 +41,7 @@ export class DatabaseServiceProvider {
   }
 
   public getOneTodoList(uuid){
-    return this.afDatabase.list('/todolists', ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
+    return this.afDatabase.list(this._path, ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
   }
 
   public editTodoList(todoList) {
@@ -98,4 +96,16 @@ export class DatabaseServiceProvider {
       return v.toString(16);
     });
   }
+
+  public initPath(uid:string){
+    this._path = '/users/' + uid + '/todolists';
+    console.log(this._path);
+  }
+
+  public initTodoRef(uid:string){
+    let path = '/users/' + uid + '/todolists';
+    this._todoRef = firebase.database().ref(path);
+    console.log(this._todoRef);
+  }
+
 }
