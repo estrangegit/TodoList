@@ -3,6 +3,7 @@ import {TabsPage} from '../tabs/tabs';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import { App } from 'ionic-angular';
 import firebase from 'firebase';
+import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 
 @Component({
   selector: 'page-login',
@@ -10,14 +11,15 @@ import firebase from 'firebase';
 })
 export class LoginPage {
 
-  todoLists: any;
-
   constructor(public userDataServiceProvider: UserDataServiceProvider,
+              public databaseServiceProvider: DatabaseServiceProvider,
               public app: App) {
 
     firebase.auth().onAuthStateChanged( user => {
       if (user) {
         this.userDataServiceProvider.setUserProfile(user);
+        this.databaseServiceProvider.initPath(user.uid);
+        this.databaseServiceProvider.initTodoRef(user.uid);
         this.userDataServiceProvider.setLoggedIn(true);
         this.app.getRootNav().setRoot(TabsPage);
       } else {
@@ -30,7 +32,7 @@ export class LoginPage {
 
   public googleLogin():void {
 
-    this.app.getRootNav().setRoot(TabsPage);
+//    this.app.getRootNav().setRoot(TabsPage);
 
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider).then( () => {
@@ -42,6 +44,5 @@ export class LoginPage {
         console.log(error.message);
       });
     });
-
   }
 }

@@ -10,7 +10,7 @@ import {options} from '../../config/speechRecognitionConfig';
 
 @Component({
   selector: 'todo-item',
-  templateUrl: 'todoitem.html'
+  templateUrl: 'todoItem.html'
 })
 export class TodoItemPage implements OnInit{
 

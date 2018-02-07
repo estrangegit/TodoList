@@ -39,10 +39,12 @@ export class TodoListPage {
     this.initTodoLists();
 
 // Check if speechRecognition feature is available
+
     this.speechRecognition.isRecognitionAvailable()
       .then((available: boolean) => {
         available ? console.log('SpeechRecognition available') : console.log('SpeechRecognition unAvailable');
       })
+
   }
 
   public addTodoList():void{
