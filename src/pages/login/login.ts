@@ -11,8 +11,6 @@ import {DatabaseServiceProvider} from '../../providers/database-service/database
 })
 export class LoginPage {
 
-  todoLists: any;
-
   constructor(public userDataServiceProvider: UserDataServiceProvider,
               public databaseServiceProvider: DatabaseServiceProvider,
               public app: App) {
