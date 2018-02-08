@@ -3,9 +3,8 @@ import {TodoItem, TodoList} from "../../pages/model/model";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/Rx';
 
-
 @Injectable()
-export class TodoServiceProvider {
+export class TodoDataServiceProvider {
 
   data:TodoList[] = [
     {

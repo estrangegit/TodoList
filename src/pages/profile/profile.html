@@ -4,12 +4,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-<!--
-  <button ion-button block (click)="logInfos()">
-    LOG INFOS
-  </button>
--->
+<ion-content padding *ngIf="userDataServiceProvider.isLoggedIn()">
+
   <ion-list>
     <ion-item>
       <ion-avatar item-start>
@@ -22,5 +18,16 @@
 
   <button ion-button block (click)="googleLogout()">
     GOOGLE LOGOUT
+  </button>
+</ion-content>
+
+<ion-content padding *ngIf="userDataServiceProvider.isDisconnectedMode()">
+  <ion-list>
+    <ion-item>
+      <h2>Vous êtes actuellement déconnecté</h2>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="connectedMode()">
+    Passer en mode connecté
   </button>
 </ion-content>
