@@ -74,6 +74,7 @@ export class TodoListPage {
               this.databaseServiceProvider.newTodoList(data.name);
             else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.newTodoList(data.name);
+              this.initTodoListsFromStorage();
             }
           }
         }

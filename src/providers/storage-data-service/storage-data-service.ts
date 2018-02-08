@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import {TodoItem, TodoList} from "../../pages/model/model";
-import {Observable} from "rxjs/Observable";
 import {Storage} from '@ionic/storage';
 import 'rxjs/Rx';
 
@@ -30,6 +28,34 @@ export class StorageDataServiceProvider {
   public editTodoListName(todoList, name) {
     todoList.name = name;
     this.storage.set(todoList.uuid, todoList);
+  }
+
+  public editTodoList(todoList) {
+    this.storage.set(todoList.uuid, todoList);
+  }
+
+  public getOneTodoList(uuid){
+    return this.storage.get(uuid);
+  }
+
+  public newTodoItem(todoList, todoItem){
+    todoItem.uuid = this.createUuid();
+    todoList.items.push(todoItem);
+    this.storage.set(todoList.uuid, todoList);
+  }
+
+  public editTodoItem(todoList, todoItem){
+    let index = todoList.items.findIndex(value => value.uuid == todoItem.uuid);
+    todoList.items[index] = todoItem;
+    this.editTodoList(todoList);
+  }
+
+  public deleteTodoItem(todoList, todoItem) {
+    let index = todoList.items.findIndex(value => value.uuid == todoItem.uuid);
+    if (index != -1) {
+      todoList.items.splice(index, 1);
+    }
+    this.editTodoList(todoList);
   }
 
   private createUuid(): string{

@@ -22,6 +22,11 @@
 </ion-content>
 
 <ion-content padding *ngIf="userDataServiceProvider.isDisconnectedMode()">
+  <ion-list>
+    <ion-item>
+      <h2>Vous êtes actuellement déconnecté</h2>
+    </ion-item>
+  </ion-list>
   <button ion-button block (click)="connectedMode()">
     Passer en mode connecté
   </button>
