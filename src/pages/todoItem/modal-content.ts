@@ -2,6 +2,8 @@ import {NavParams, Platform, ViewController} from 'ionic-angular';
 import {TodoItem, TodoList} from '../model/model';
 import {Component} from '@angular/core';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
+import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
+import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
 
 @Component({
   templateUrl: 'modal-content.html'
@@ -16,7 +18,9 @@ export class ModalContentPage {
     public platform: Platform,
     public params: NavParams,
     public viewCtrl: ViewController,
-    public databaseServiceProvider: DatabaseServiceProvider) {
+    public databaseServiceProvider: DatabaseServiceProvider,
+    public userDataServiceProvider: UserDataServiceProvider,
+    public storageDataServiceProvider: StorageDataServiceProvider) {
 
     this.todoItem = this.params.get('todoItem');
     this.todoList = this.params.get('todoList');
@@ -31,10 +35,21 @@ export class ModalContentPage {
   }
 
   public save(){
-    if(this.newTodoItem)
-      this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
-    else
-      this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+    if(this.newTodoItem){
+      if(this.userDataServiceProvider.isLoggedIn()){
+        this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
+      }
+      else if(this.userDataServiceProvider.isDisconnectedMode()){
+        this.storageDataServiceProvider.newTodoItem(this.todoList, this.todoItem);
+      }
+    }
+    else{
+      if(this.userDataServiceProvider.isLoggedIn()){
+        this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+      }else if(this.userDataServiceProvider.isDisconnectedMode()){
+        this.storageDataServiceProvider.editTodoItem(this.todoList, this.todoItem);
+      }
+    }
     this.dismiss()
   }
 

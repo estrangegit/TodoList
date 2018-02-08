@@ -10,7 +10,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { TodoServiceProvider } from '../providers/todo-service/todo-service';
+import { TodoDataServiceProvider } from '../providers/todo-data-service/todo-data-service';
 import { ModalContentPage } from '../pages/todoItem/modal-content';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { LoginPage } from '../pages/login/login';
@@ -19,6 +19,8 @@ import { ProfilePage } from '../pages/profile/profile';
 import { AngularFireModule } from 'angularfire2';
 import { DatabaseServiceProvider } from '../providers/database-service/database-service';
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
+import {StorageDataServiceProvider} from '../providers/storage-data-service/storage-data-service';
+import {IonicStorageModule} from '@ionic/storage';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
@@ -43,6 +45,7 @@ export const firebaseConfig = {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule
   ],
@@ -60,7 +63,8 @@ export const firebaseConfig = {
   providers: [
     StatusBar,
     SplashScreen,
-    TodoServiceProvider,
+    TodoDataServiceProvider,
+    StorageDataServiceProvider,
     UserDataServiceProvider,
     SpeechRecognition,
     {provide: ErrorHandler, useClass: IonicErrorHandler},

@@ -7,6 +7,7 @@ import {LoginPage} from '../login/login';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
 import {options} from '../../config/speechRecognitionConfig';
+import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
 
 @Component({
   selector: 'todo-item',
@@ -23,16 +24,24 @@ export class TodoItemPage implements OnInit{
               public userDataServiceProvider: UserDataServiceProvider,
               public app: App,
               public databaseServiceProvider: DatabaseServiceProvider,
+              public storageDataServiceProvider: StorageDataServiceProvider,
               public speechRecognition: SpeechRecognition) {}
 
+
+
   ngOnInit(){
-    this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
-      data => {this.list = data[0]});
+    if(this.userDataServiceProvider.isLoggedIn()){
+      this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
+        data => {this.list = data[0]});
+    }else if(this.userDataServiceProvider.isDisconnectedMode()){
+        this.initTodoItemsFromStorage();
+    }
   }
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
-    if(!loggedIn){
+    let disconnectedMode = this.userDataServiceProvider.isDisconnectedMode();
+    if(!loggedIn && !disconnectedMode){
       this.app.getRootNav().setRoot(LoginPage);
       return false;
     }else{
@@ -55,7 +64,10 @@ export class TodoItemPage implements OnInit{
         {
           text: 'Confirmer',
           handler: () => {
-            this.databaseServiceProvider.deleteTodoItem(todoList, todoItem);
+            if(this.userDataServiceProvider.isLoggedIn())
+              this.databaseServiceProvider.deleteTodoItem(todoList, todoItem);
+            else if(this.userDataServiceProvider.isDisconnectedMode())
+              this.storageDataServiceProvider.deleteTodoItem(todoList, todoItem);
           }
         }
       ]
@@ -72,13 +84,22 @@ export class TodoItemPage implements OnInit{
   }
 
   public toggle(todoList):void{
-    this.databaseServiceProvider.editTodoList(todoList);
+    if(this.userDataServiceProvider.isLoggedIn())
+      this.databaseServiceProvider.editTodoList(todoList);
+    else if(this.userDataServiceProvider.isDisconnectedMode()){
+      this.storageDataServiceProvider.editTodoList(todoList);
+    }
   }
 
   public addTodoItem(todoList:TodoList){
     let todoItem = <TodoItem>{uuid:'', name:'', complete:false};
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
+  }
+
+  private initTodoItemsFromStorage() {
+    this.storageDataServiceProvider.getOneTodoList(this.navParams.get('uuid'))
+                                    .then((list)=>{this.list = list});
   }
 
   public listenAfterPermissionGranted():void {
@@ -92,7 +113,13 @@ export class TodoItemPage implements OnInit{
           if(firstWord.toLowerCase()=='ajouter'){
             itemName = itemName.charAt(0).toUpperCase() + itemName.slice(1);
             let todoItem = <TodoItem>{uuid:'', name:itemName, complete:false};
-            this.databaseServiceProvider.newTodoItem(this.list, todoItem);
+
+            if(this.userDataServiceProvider.isLoggedIn()){
+              this.databaseServiceProvider.newTodoItem(this.list, todoItem);
+            }else if(this.userDataServiceProvider.isDisconnectedMode()){
+              this.storageDataServiceProvider.newTodoItem(this.list, todoItem);
+            }
+
           }else if(firstWord.toLowerCase()=='supprimer'){
             let itemNames = [];
 
@@ -103,12 +130,14 @@ export class TodoItemPage implements OnInit{
             for(let i = 0; i < itemNames.length && !abort; i++){
               for(let j = 0; j < this.list.items.length && !abort; j++){
                 if(itemNames[i].toLowerCase()==this.list.items[j].name.toLowerCase()){
-                  this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                  if(this.userDataServiceProvider.isLoggedIn())
+                    this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                  else if(this.userDataServiceProvider.isDisconnectedMode())
+                    this.storageDataServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
                   abort = true;
                 }
               }
             }
-
           }
         },
         (onerror) => console.log('error:', onerror)

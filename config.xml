@@ -104,4 +104,5 @@
     <plugin name="cordova-plugin-speechrecognition" spec="^1.2.0" />
     <allow-navigation href="http://192.168.0.15:8100" />
     <allow-navigation href="http://130.190.57.230:8100" />
+    <plugin name="cordova-sqlite-storage" spec="^2.2.0" />
 </widget>
