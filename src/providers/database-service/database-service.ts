@@ -20,9 +20,11 @@ export class DatabaseServiceProvider {
       return firebase.database().ref(this._pathUser).once('value').then((data)=>{
         const ownList = data.val();
         let ownTodoList = [];
-        for(let listId in todoLists){
-          if(ownList.own.indexOf(todoLists[listId].uuid) !=-1 ){
-            ownTodoList.push(todoLists[listId]);
+        if(ownList != null){
+          for(let listId in todoLists){
+            if(ownList.own.indexOf(todoLists[listId].uuid) !=-1 ){
+              ownTodoList.push(todoLists[listId]);
+            }
           }
         }
         return ownTodoList;
