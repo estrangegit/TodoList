@@ -48,7 +48,6 @@ export class DatabaseServiceProvider {
   }
 
   public deleteTodoList(todoList : TodoList) {
-
     firebase.database().ref(this._pathUser).once('value').then((data)=>{
       const ownLists =  data.val().own;
       const index = ownLists.indexOf(todoList.uuid);
@@ -106,7 +105,6 @@ export class DatabaseServiceProvider {
 
     todoList.items.push(todoItem);
     this.editTodoList(todoList);
-
   }
 
   public editTodoItem(todoList, todoItem){
@@ -144,5 +142,4 @@ export class DatabaseServiceProvider {
     this._todoRef = firebase.database().ref(path);
     this._todoUserRef = firebase.database().ref(pathUser);
   }
-
 }
