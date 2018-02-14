@@ -14,30 +14,52 @@ export class DatabaseServiceProvider {
 
   constructor(public afDatabase: AngularFireDatabase) {}
 
-  public getTodoList(): Observable<any[]> {
-    return this.afDatabase.list(this._path).valueChanges();
+  public getTodoList(): any {
+    return Observable.fromPromise(firebase.database().ref(this._path).once('value').then((data)=>{
+      const todoLists =  data.val();
+      return firebase.database().ref(this._pathUser).once('value').then((data)=>{
+        const ownList = data.val();
+        let ownTodoList = [];
+        for(let listId in todoLists){
+          if(ownList.own.indexOf(todoLists[listId].uuid) !=-1 ){
+            ownTodoList.push(todoLists[listId]);
+          }
+        }
+        return ownTodoList;
+      })
+    }));
   }
 
   public newTodoList(name: String){
     let uuid = this.createUuid();
     let todoList = {"uuid":uuid, name: name, items: false};
-
     this._todoRef.push(todoList);
-
     firebase.database().ref(this._pathUser + '/own').once('value').then((snapshot)=>{
-      let data =  snapshot.val();
-      let ownLists = [];
-      if(data!=null){
-        ownLists=data
+      const ownLists =  snapshot.val();
+      let ownListsTemp = [];
+      if(ownLists!=null){
+        ownListsTemp=ownLists
       }
-      ownLists.push(uuid);
+      ownListsTemp.push(uuid);
       this._todoUserRef.set({
-        own: ownLists
+        own: ownListsTemp
       })
     })
   }
 
   public deleteTodoList(todoList : TodoList) {
+
+    firebase.database().ref(this._pathUser).once('value').then((data)=>{
+      const ownLists =  data.val().own;
+      const index = ownLists.indexOf(todoList.uuid);
+      if(index != -1){
+        ownLists.splice(index,1);
+      }
+      this._todoUserRef.set({
+        own: ownLists
+      })
+    });
+
     this._todoRef
       .orderByChild("uuid")
       .equalTo(todoList.uuid)
@@ -58,7 +80,7 @@ export class DatabaseServiceProvider {
     return this.afDatabase.list(this._path, ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
   }
 
-  public editTodoList(todoList) {
+  public editTodoList(todoList){
     this._todoRef
       .orderByChild("uuid")
       .equalTo(todoList.uuid)

@@ -45,11 +45,12 @@ export class TodoListPage {
 
 
 // Check if speechRecognition feature is available
-
+/*
     this.speechRecognition.isRecognitionAvailable()
       .then((available: boolean) => {
         available ? console.log('SpeechRecognition available') : console.log('SpeechRecognition unAvailable');
       })
+*/
   }
 
   public addTodoList():void{
@@ -70,8 +71,10 @@ export class TodoListPage {
         {
           text: 'Enregistrer',
           handler: data => {
-            if(this.userDataServiceProvider.isLoggedIn())
+            if(this.userDataServiceProvider.isLoggedIn()){
               this.databaseServiceProvider.newTodoList(data.name);
+              this.initTodoLists();
+            }
             else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.newTodoList(data.name);
               this.initTodoListsFromStorage();
@@ -133,8 +136,10 @@ export class TodoListPage {
         {
           text: 'Confirmer',
           handler: () => {
-            if(this.userDataServiceProvider.isLoggedIn())
+            if(this.userDataServiceProvider.isLoggedIn()){
               this.databaseServiceProvider.deleteTodoList(todoList);
+              this.initTodoLists();
+            }
             else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.deleteTodoList(todoList);
               this.initTodoListsFromStorage();
@@ -154,7 +159,9 @@ export class TodoListPage {
 
   private initTodoLists(){
     this.databaseServiceProvider.getTodoList().subscribe(
-      data => {this.populateItems(data);}
+      data => {
+        this.populateItems(data);
+      }
     );
   }
 
