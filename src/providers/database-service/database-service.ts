@@ -9,20 +9,58 @@ export class DatabaseServiceProvider {
 
   private _todoRef: any;
   private _path: string = '';
+  private _todoUserRef: any;
+  private _pathUser: string = '';
 
   constructor(public afDatabase: AngularFireDatabase) {}
 
-  public getTodoList(): Observable<any[]> {
-    return this.afDatabase.list(this._path).valueChanges();
+  public getTodoList(): any {
+    return Observable.fromPromise(firebase.database().ref(this._path).once('value').then((data)=>{
+      const todoLists =  data.val();
+      return firebase.database().ref(this._pathUser).once('value').then((data)=>{
+        const ownList = data.val();
+        let ownTodoList = [];
+        if(ownList != null){
+          for(let listId in todoLists){
+            if(ownList.own.indexOf(todoLists[listId].uuid) !=-1 ){
+              ownTodoList.push(todoLists[listId]);
+            }
+          }
+        }
+        return ownTodoList;
+      })
+    }));
   }
 
   public newTodoList(name: String){
     let uuid = this.createUuid();
     let todoList = {"uuid":uuid, name: name, items: false};
     this._todoRef.push(todoList);
+    firebase.database().ref(this._pathUser + '/own').once('value').then((snapshot)=>{
+      const ownLists =  snapshot.val();
+      let ownListsTemp = [];
+      if(ownLists!=null){
+        ownListsTemp=ownLists
+      }
+      ownListsTemp.push(uuid);
+      this._todoUserRef.set({
+        own: ownListsTemp
+      })
+    })
   }
 
   public deleteTodoList(todoList : TodoList) {
+    firebase.database().ref(this._pathUser).once('value').then((data)=>{
+      const ownLists =  data.val().own;
+      const index = ownLists.indexOf(todoList.uuid);
+      if(index != -1){
+        ownLists.splice(index,1);
+      }
+      this._todoUserRef.set({
+        own: ownLists
+      })
+    });
+
     this._todoRef
       .orderByChild("uuid")
       .equalTo(todoList.uuid)
@@ -43,7 +81,7 @@ export class DatabaseServiceProvider {
     return this.afDatabase.list(this._path, ref => ref.orderByChild('uuid').equalTo(uuid)).valueChanges();
   }
 
-  public editTodoList(todoList) {
+  public editTodoList(todoList){
     this._todoRef
       .orderByChild("uuid")
       .equalTo(todoList.uuid)
@@ -69,7 +107,6 @@ export class DatabaseServiceProvider {
 
     todoList.items.push(todoItem);
     this.editTodoList(todoList);
-
   }
 
   public editTodoItem(todoList, todoItem){
@@ -97,12 +134,14 @@ export class DatabaseServiceProvider {
   }
 
   public initPath(uid:string){
-    this._path = '/users/' + uid + '/todolists';
+    this._path = '/lists';
+    this._pathUser = '/users/' + uid;
   }
 
   public initTodoRef(uid:string){
-    let path = '/users/' + uid + '/todolists';
+    let path = '/lists';
+    let pathUser = '/users/' + uid;
     this._todoRef = firebase.database().ref(path);
+    this._todoUserRef = firebase.database().ref(pathUser);
   }
-
 }
