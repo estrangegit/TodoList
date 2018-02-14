@@ -9,6 +9,8 @@ export class DatabaseServiceProvider {
 
   private _todoRef: any;
   private _path: string = '';
+  private _todoUserRef: any;
+  private _pathUser: string = '';
 
   constructor(public afDatabase: AngularFireDatabase) {}
 
@@ -19,7 +21,20 @@ export class DatabaseServiceProvider {
   public newTodoList(name: String){
     let uuid = this.createUuid();
     let todoList = {"uuid":uuid, name: name, items: false};
+
     this._todoRef.push(todoList);
+
+    firebase.database().ref(this._pathUser + '/own').once('value').then((snapshot)=>{
+      let data =  snapshot.val();
+      let ownLists = [];
+      if(data!=null){
+        ownLists=data
+      }
+      ownLists.push(uuid);
+      this._todoUserRef.set({
+        own: ownLists
+      })
+    })
   }
 
   public deleteTodoList(todoList : TodoList) {
@@ -97,12 +112,15 @@ export class DatabaseServiceProvider {
   }
 
   public initPath(uid:string){
-    this._path = '/users/' + uid + '/todolists';
+    this._path = '/lists';
+    this._pathUser = '/users/' + uid;
   }
 
   public initTodoRef(uid:string){
-    let path = '/users/' + uid + '/todolists';
+    let path = '/lists';
+    let pathUser = '/users/' + uid;
     this._todoRef = firebase.database().ref(path);
+    this._todoUserRef = firebase.database().ref(pathUser);
   }
 
 }
