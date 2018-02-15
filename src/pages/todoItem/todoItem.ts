@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AlertController, App, ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
-import {TodoItem, TodoList} from '../model/model';
+import {TodoItem, TodoList} from '../../model/model';
 import {ModalContentPage} from './modal-content';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
@@ -118,7 +118,7 @@ export class TodoItemPage implements OnInit{
             this.databaseServiceProvider.shareTodoList(todoList, data.email).then((message) => {
               let alert = this.alertCtrl.create({
                 subTitle: message,
-                buttons: ['Dismiss']
+                buttons: ['Fermer']
               });
               alert.present();
             });

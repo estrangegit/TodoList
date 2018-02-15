@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/Observable";
-import {TodoList} from '../../pages/model/model';
+import {TodoList} from '../../model/model';
 import * as firebase from 'firebase/app';
 import {UserDataServiceProvider} from '../user-data-service/user-data-service';
 
@@ -27,16 +27,52 @@ export class DatabaseServiceProvider {
       return firebase.database().ref(this._pathUser).once('value').then((data)=>{
         const Lists = data.val();
         let todoList = [];
+
+        //Permet d'enlever les listes utilisateurs qui n'existent plus
+        let tempAllTodoUuid = [];
+
+        for(let listId in todoLists){
+          tempAllTodoUuid.push(todoLists[listId].uuid);
+        }
+
+        let ownLists =  [];
+        let shareLists = [];
+
+        if(Lists != null){
+          if(typeof Lists.own != 'undefined')
+            ownLists = Lists.own;
+
+          if(typeof Lists.share != 'undefined')
+            shareLists = Lists.share;
+        }
+
+        ownLists = ownLists.filter((uuid)=>{
+          return tempAllTodoUuid.indexOf(uuid)!=-1
+        });
+
+        shareLists = shareLists.filter((uuid)=>{
+          return (tempAllTodoUuid.indexOf(uuid)!=-1)
+        });
+
+        //Corrige les listes présentent en base de données
+        this._todoUserRef.set({
+          own: ownLists,
+          share: shareLists,
+          email: this.userDataServiceProvider.getUserProfile().providerData[0].email
+        });
+
+        //Récupère l'ensemble des listes des utilisateurs
         if(Lists != null){
           for(let listId in todoLists){
-            if((typeof Lists.own != 'undefined') && (Lists.own.indexOf(todoLists[listId].uuid) !=-1)){
+            if(ownLists.indexOf(todoLists[listId].uuid) !=-1){
               todoList.push(todoLists[listId]);
             }
-            if((typeof  Lists.share != 'undefined') && (Lists.share.indexOf(todoLists[listId].uuid) !=-1)){
+            if(shareLists.indexOf(todoLists[listId].uuid) !=-1){
               todoList.push(todoLists[listId]);
             }
           }
         }
+
         return todoList;
       })
     }));
@@ -70,13 +106,28 @@ export class DatabaseServiceProvider {
 
   public deleteTodoList(todoList : TodoList) {
     firebase.database().ref(this._pathUser).once('value').then((data)=>{
-      const ownLists =  data.val().own;
-      const index = ownLists.indexOf(todoList.uuid);
-      if(index != -1){
-        ownLists.splice(index,1);
+      let ownLists =  [];
+      let shareLists = [];
+
+      if(typeof data.val().own != 'undefined')
+        ownLists = data.val().own;
+
+      if(typeof data.val().share != 'undefined')
+        shareLists = data.val().share;
+
+      const ownIndex = ownLists.indexOf(todoList.uuid);
+      const shareIndex = shareLists.indexOf(todoList.uuid);
+
+      if(ownIndex != -1){
+        ownLists.splice(ownIndex,1);
       }
+      if(shareIndex != -1){
+        shareLists.splice(shareIndex,1);
+      }
+
       this._todoUserRef.set({
         own: ownLists,
+        share: shareLists,
         email: this.userDataServiceProvider.getUserProfile().providerData[0].email
       })
     });
@@ -140,6 +191,8 @@ export class DatabaseServiceProvider {
 
           if(shareListsTemp.indexOf(todoList.uuid) != -1){
             message = 'Cette liste est déjà partagée avec ' + email;
+          }else if(ownListsTemp.indexOf(todoList.uuid) != -1){
+            message = email + ' est déjà propriétaire de cette liste';
           }else{
             shareListsTemp.push(todoList.uuid);
             message = 'Succès du partage de la liste avec ' + email;

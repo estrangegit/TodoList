@@ -1,5 +1,5 @@
 import {NavParams, Platform, ViewController} from 'ionic-angular';
-import {TodoItem, TodoList} from '../model/model';
+import {TodoItem, TodoList} from '../../model/model';
 import {Component} from '@angular/core';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
