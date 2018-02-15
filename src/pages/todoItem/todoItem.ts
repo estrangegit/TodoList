@@ -113,7 +113,7 @@ export class TodoItemPage implements OnInit{
           handler: data => {}
         },
         {
-          text: 'Enregistrer',
+          text: 'Partager',
           handler: data => {
             this.databaseServiceProvider.shareTodoList(todoList, data.email).then((message) => {
               let alert = this.alertCtrl.create({

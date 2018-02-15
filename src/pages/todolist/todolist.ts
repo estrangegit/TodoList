@@ -190,6 +190,7 @@ export class TodoListPage {
 
               if(this.userDataServiceProvider.isLoggedIn()){
                 this.databaseServiceProvider.newTodoList(listName);
+                this.initTodoLists();
               }
               else if(this.userDataServiceProvider.isDisconnectedMode()){
                 this.storageDataServiceProvider.newTodoList(listName);
