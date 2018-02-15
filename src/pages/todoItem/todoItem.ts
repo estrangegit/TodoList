@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AlertController, App, ItemSliding, ModalController, NavController, NavParams} from 'ionic-angular';
-import {TodoItem, TodoList} from '../model/model';
+import {TodoItem, TodoList} from '../../model/model';
 import {ModalContentPage} from './modal-content';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {LoginPage} from '../login/login';
@@ -95,6 +95,38 @@ export class TodoItemPage implements OnInit{
     let todoItem = <TodoItem>{uuid:'', name:'', complete:false};
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
+  }
+
+  public shareTodoList(todoList: TodoList){
+    let prompt = this.alertCtrl.create({
+      title: 'Partage de la liste ' + todoList.name,
+      message: "Merci d'entrer l'email de destination",
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'xxxxxxxx@xxxxx.xx'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: data => {}
+        },
+        {
+          text: 'Partager',
+          handler: data => {
+            this.databaseServiceProvider.shareTodoList(todoList, data.email).then((message) => {
+              let alert = this.alertCtrl.create({
+                subTitle: message,
+                buttons: ['Fermer']
+              });
+              alert.present();
+            });
+          }
+        }
+      ]
+    });
+    prompt.present();
   }
 
   private initTodoItemsFromStorage() {

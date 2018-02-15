@@ -21,8 +21,10 @@ Etudiants:
 + Les fonctionnalités d'édition, d'ajout et de suppression de listes sont présentes.
 + Une reconnaissance vocale permet la gestion de l'ensemble des listes et des items. Pour cela l'application reconnaît les mots clés *ajouter* et *supprimer* suivi de la liste ou de l'item choisi (exemple: *ajouter liste de courses*).
 + L'application est accessible en mode connecté et en mode déconnecté.
++ Possibilité de partager des listes entre les utilisateurs grâce à leur email
 
 ### Détails des spécificités de l'application
 + Les informations sont stockées sur une base de données accessible en ligne au travers du service *firebase*.
 + L'application est conçue pour plusieurs utilisateurs: chaque utilisateur connecté a accès à une liste qui lui ait propre.
-+ Le mode déconnecté permet à l'utilisateur de stocker l'ensemble des informations dans une base de données SQlite
++ Le mode déconnecté permet à l'utilisateur de stocker l'ensemble des informations dans une base de données SQlite.
++ Le partage d'une liste donne tous les droits (édition, suppression) à ceux avec lesquels elle est partagée.
