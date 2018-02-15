@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {AlertController, App, ItemSliding, NavController} from 'ionic-angular';
 import {TodoItemPage} from '../todoItem/todoItem';
-import {TodoList} from '../model/model';
+import {TodoList} from '../../model/model';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
@@ -42,15 +42,6 @@ export class TodoListPage {
     }else if(this.userDataServiceProvider.isDisconnectedMode()){
       this.initTodoListsFromStorage();
     }
-
-
-// Check if speechRecognition feature is available
-/*
-    this.speechRecognition.isRecognitionAvailable()
-      .then((available: boolean) => {
-        available ? console.log('SpeechRecognition available') : console.log('SpeechRecognition unAvailable');
-      })
-*/
   }
 
   public addTodoList():void{
@@ -199,6 +190,7 @@ export class TodoListPage {
 
               if(this.userDataServiceProvider.isLoggedIn()){
                 this.databaseServiceProvider.newTodoList(listName);
+                this.initTodoLists();
               }
               else if(this.userDataServiceProvider.isDisconnectedMode()){
                 this.storageDataServiceProvider.newTodoList(listName);
