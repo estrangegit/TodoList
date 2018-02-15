@@ -3,6 +3,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/Observable";
 import {TodoList} from '../../pages/model/model';
 import * as firebase from 'firebase/app';
+import {UserDataServiceProvider} from '../user-data-service/user-data-service';
 
 @Injectable()
 export class DatabaseServiceProvider {
@@ -11,40 +12,58 @@ export class DatabaseServiceProvider {
   private _path: string = '';
   private _todoUserRef: any;
   private _pathUser: string = '';
+  private _rootRef: any;
+  private _pathRoot: string = '';
 
-  constructor(public afDatabase: AngularFireDatabase) {}
+  constructor(public afDatabase: AngularFireDatabase,
+              public userDataServiceProvider: UserDataServiceProvider) {
+    this._pathRoot = '/users';
+    this._rootRef = firebase.database().ref('/users');
+  }
 
   public getTodoList(): any {
     return Observable.fromPromise(firebase.database().ref(this._path).once('value').then((data)=>{
       const todoLists =  data.val();
       return firebase.database().ref(this._pathUser).once('value').then((data)=>{
-        const ownList = data.val();
-        let ownTodoList = [];
-        if(ownList != null){
+        const Lists = data.val();
+        let todoList = [];
+        if(Lists != null){
           for(let listId in todoLists){
-            if(ownList.own.indexOf(todoLists[listId].uuid) !=-1 ){
-              ownTodoList.push(todoLists[listId]);
+            if((typeof Lists.own != 'undefined') && (Lists.own.indexOf(todoLists[listId].uuid) !=-1)){
+              todoList.push(todoLists[listId]);
+            }
+            if((typeof  Lists.share != 'undefined') && (Lists.share.indexOf(todoLists[listId].uuid) !=-1)){
+              todoList.push(todoLists[listId]);
             }
           }
         }
-        return ownTodoList;
+        return todoList;
       })
     }));
   }
 
   public newTodoList(name: String){
+
     let uuid = this.createUuid();
     let todoList = {"uuid":uuid, name: name, items: false};
+
     this._todoRef.push(todoList);
-    firebase.database().ref(this._pathUser + '/own').once('value').then((snapshot)=>{
-      const ownLists =  snapshot.val();
+
+    firebase.database().ref(this._pathUser).once('value').then((data)=>{
+      const Lists = data.val();
       let ownListsTemp = [];
-      if(ownLists!=null){
-        ownListsTemp=ownLists
+      let shareListsTemp = [];
+      if(Lists!=null){
+        if(typeof Lists.own != 'undefined')
+          ownListsTemp=Lists.own;
+        if(typeof  Lists.share != 'undefined')
+          shareListsTemp=Lists.share;
       }
       ownListsTemp.push(uuid);
       this._todoUserRef.set({
-        own: ownListsTemp
+        own: ownListsTemp,
+        share: shareListsTemp,
+        email: this.userDataServiceProvider.getUserProfile().providerData[0].email
       })
     })
   }
@@ -57,7 +76,8 @@ export class DatabaseServiceProvider {
         ownLists.splice(index,1);
       }
       this._todoUserRef.set({
-        own: ownLists
+        own: ownLists,
+        email: this.userDataServiceProvider.getUserProfile().providerData[0].email
       })
     });
 
@@ -94,6 +114,49 @@ export class DatabaseServiceProvider {
             items: todoList.items
           });
         });
+      })
+  }
+
+  public shareTodoList(todoList, email): Promise<any>{
+    return this._rootRef.orderByChild('email')
+      .equalTo(email)
+      .once("value")
+      .then((data) => {
+
+        let message = ''
+
+        if(data.val()==null)
+          message = email + ' ne correspond à aucun utilisateur répertorié';
+
+        data.forEach((snapChild) => {
+
+          let ownListsTemp = data.val()[snapChild.key]['own'];
+          let shareListsTemp = data.val()[snapChild.key]['share'];
+
+          if(typeof ownListsTemp == 'undefined')
+            ownListsTemp = [];
+          if(typeof shareListsTemp == 'undefined')
+            shareListsTemp = [];
+
+          if(shareListsTemp.indexOf(todoList.uuid) != -1){
+            message = 'Cette liste est déjà partagée avec ' + email;
+          }else{
+            shareListsTemp.push(todoList.uuid);
+            message = 'Succès du partage de la liste avec ' + email;
+          }
+
+          let pathUser = '/users/' + snapChild.key;
+          let userRef = firebase.database().ref(pathUser);
+
+          userRef.set({
+            own: ownListsTemp,
+            share: shareListsTemp,
+            email: email
+          });
+
+        });
+
+        return message;
       })
   }
 

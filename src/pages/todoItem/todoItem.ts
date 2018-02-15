@@ -97,6 +97,38 @@ export class TodoItemPage implements OnInit{
     modal.present();
   }
 
+  public shareTodoList(todoList: TodoList){
+    let prompt = this.alertCtrl.create({
+      title: 'Partage de la liste ' + todoList.name,
+      message: "Merci d'entrer l'email de destination",
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'xxxxxxxx@xxxxx.xx'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: data => {}
+        },
+        {
+          text: 'Enregistrer',
+          handler: data => {
+            this.databaseServiceProvider.shareTodoList(todoList, data.email).then((message) => {
+              let alert = this.alertCtrl.create({
+                subTitle: message,
+                buttons: ['Dismiss']
+              });
+              alert.present();
+            });
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
   private initTodoItemsFromStorage() {
     this.storageDataServiceProvider.getOneTodoList(this.navParams.get('uuid'))
                                     .then((list)=>{this.list = list});
