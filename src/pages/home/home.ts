@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
-import {App} from 'ionic-angular';
+import {App, ToastController} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 
 @Component({
@@ -9,8 +9,14 @@ import {LoginPage} from '../login/login';
 })
 
 export class HomePage {
-  constructor(public userDataServiceProvider: UserDataServiceProvider,
-              public app: App) {}
+  constructor(
+    public userDataServiceProvider: UserDataServiceProvider,
+    public app: App,
+    private toastCtrl: ToastController
+  ) 
+  {
+
+  }
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
@@ -22,5 +28,15 @@ export class HomePage {
       return true;
     }
   }
+
+  showToast(){
+    this.toastCtrl.create({
+      message: 'User was added successfully',
+      duration: 3000,
+      position: 'top'
+    }).present();
+  }
+
+
 
 }

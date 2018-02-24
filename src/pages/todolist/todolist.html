@@ -12,26 +12,30 @@
       <ion-item (click)="itemSelected(item.list.uuid)">
         <ion-label>{{ item.list.name }} (à faire: {{ item.nbUncompletedItems }})</ion-label>
       </ion-item>
-      <ion-item-options side="right">
-        <button ion-button (click)="deleteTodoList(item.list, slidingItem)" color="light" icon-start>
-          <ion-icon name="delete"></ion-icon>
-          Supprimer
+      <ion-item-options side="left">
+        <button ion-button (click)="deleteTodoList(item.list, slidingItem)" color="danger">
+          <ion-icon name="close-circle"></ion-icon>
         </button>
-        <button ion-button (click)="editTodoList(item.list, slidingItem)" icon-start>
-          <ion-icon name="edit"></ion-icon>
-          Modifier
+        
+      </ion-item-options>
+      <ion-item-options side="right">
+        <button ion-button (click)="editTodoList(item.list, slidingItem)">
+            <ion-icon name="create"></ion-icon>
         </button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  
+  <ion-fab bottom right>
+    <button ion-fab color="blue"  (click)="addTodoList()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 
-  <button ion-button color="light" block (click)="addTodoList()">Ajouter une liste</button>
+  <ion-fab bottom left>
+      <button ion-fab color="blue"  (click)="listen()">
+        <ion-icon name="mic"></ion-icon>
+      </button>
+    </ion-fab>
 
-  <button ion-button block (click)="listen()">
-    <div>
-      <ion-icon name="mic">
-        <label>Parle-moi</label>
-      </ion-icon>
-    </div>
-  </button>
 </ion-content>

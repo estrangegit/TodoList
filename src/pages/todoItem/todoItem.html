@@ -13,25 +13,36 @@
           <ion-label>{{ item.name }}</ion-label>
           <ion-toggle (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-toggle>
         </ion-item>
-        <ion-item-options side="right">
-          <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="light" icon-start>
-            Supprimer
-          </button>
-          <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
-            Modifier
-          </button>
-        </ion-item-options>
+        <ion-item-options side="left">
+            <button ion-button (click)="deleteTodoItem(item.list, slidingItem)" color="danger">
+              <ion-icon name="close-circle"></ion-icon>
+            </button>
+            
+          </ion-item-options>
+          <ion-item-options side="right">
+            <button ion-button (click)="editTodoItem(item.list, slidingItem)">
+                <ion-icon name="create"></ion-icon>
+            </button>
+          </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-  <button ion-button color="light" block (click)="addTodoItem(list)">Ajouter un item</button>
 
-  <button ion-button block (click)="listen()">
-    <div>
-      <ion-icon name="mic">
-        <label>Parle-moi</label>
-      </ion-icon>
-    </div>
-  </button>
+  <ion-fab bottom right>
+    <button ion-fab color="blue"  (click)="addTodoItem(list)">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 
-  <button class="shareListButton" ion-button color="light" block (click)="shareTodoList(list)">Partager cette liste</button>
+  <ion-fab bottom left>
+      <button ion-fab color="blue"  (click)="listen()">
+        <ion-icon name="mic"></ion-icon>
+      </button>
+  </ion-fab>
+
+  <ion-fab bottom center>
+      <button ion-fab color="blue"  (click)="shareTodoList(list)">
+        <ion-icon name="share"></ion-icon>
+      </button>
+  </ion-fab>
+
 </ion-content>

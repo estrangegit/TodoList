@@ -16,15 +16,15 @@
   <ion-list>
     <ion-item>
       <ion-label color="primary">Desciption</ion-label>
-      <ion-input [(ngModel)]="todoItem.name"></ion-input>
+      <ion-input type="text" [(ngModel)]="todoItem.name"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Effectué</ion-label>
       <ion-toggle [(ngModel)]="todoItem.complete"></ion-toggle>
     </ion-item>
     <ion-item>
-      <button ion-button color="light" (click)="cancel()">Annuler</button>
-      <button ion-button (click)="save()">Enregistrer</button>
+      <button ion-button round medium color="light" (click)="cancel()">Annuler</button>
+      <button ion-button round large (click)="save()">Enregistrer</button>
     </ion-item>
   </ion-list>
 </ion-content>
