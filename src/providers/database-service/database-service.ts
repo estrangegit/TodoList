@@ -22,8 +22,6 @@ export class DatabaseServiceProvider {
   }
 
   public getTodoList(): any {
-
-
     firebase.database().ref(this._path).once('value').then((data)=>{
       const todoLists =  data.val();
       firebase.database().ref(this._pathUser).once('value').then((data)=>{
