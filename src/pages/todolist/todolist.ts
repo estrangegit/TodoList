@@ -64,7 +64,6 @@ export class TodoListPage {
           handler: data => {
             if(this.userDataServiceProvider.isLoggedIn()){
               this.databaseServiceProvider.newTodoList(data.name);
-              this.initTodoLists();
             }
             else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.newTodoList(data.name);
@@ -129,7 +128,6 @@ export class TodoListPage {
           handler: () => {
             if(this.userDataServiceProvider.isLoggedIn()){
               this.databaseServiceProvider.deleteTodoList(todoList);
-              this.initTodoLists();
             }
             else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.deleteTodoList(todoList);
@@ -149,11 +147,16 @@ export class TodoListPage {
   }
 
   private initTodoLists(){
-    this.databaseServiceProvider.getTodoList().subscribe(
-      data => {
-        this.populateItems(data);
+
+    this.databaseServiceProvider.getTodoList().subscribe(data => {data.subscribe(data => {
+      let lists = [];
+      for(let i = 0; i < data.length; i++){
+        for(let j = 0; j < data[i].length; j++){
+          lists.push(data[i][j])
+        }
       }
-    );
+      this.populateItems(lists);
+    })});
   }
 
   private initTodoListsFromStorage() {
@@ -163,6 +166,7 @@ export class TodoListPage {
   }
 
   private populateItems(data){
+
     this.items = [];
     for (let i = 0; i < data.length; i++) {
       let nbUncompletedItems = 0;
@@ -190,7 +194,6 @@ export class TodoListPage {
 
               if(this.userDataServiceProvider.isLoggedIn()){
                 this.databaseServiceProvider.newTodoList(listName);
-                this.initTodoLists();
               }
               else if(this.userDataServiceProvider.isDisconnectedMode()){
                 this.storageDataServiceProvider.newTodoList(listName);
