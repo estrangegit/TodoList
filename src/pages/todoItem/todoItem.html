@@ -14,26 +14,31 @@
           <ion-toggle (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-toggle>
         </ion-item>
         <ion-item-options side="right">
-          <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="light" icon-start>
-            Supprimer
+          <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="danger" icon-start>
+            <ion-icon name="close-circle"></ion-icon>
           </button>
           <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
-            Modifier
+            <ion-icon name="create"></ion-icon>
           </button>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-  <button ion-button color="light" block (click)="addTodoItem(list)">Ajouter un item</button>
 
-  <button ion-button block (click)="listen()">
-    <div>
-      <ion-icon name="mic">
-        <label>Parle-moi</label>
-      </ion-icon>
-    </div>
-  </button>
-
-  <button class="shareListButton" ion-button color="light" block (click)="shareTodoList(list)">Partager cette liste</button>
-
-  <button class="showPositionButton" ion-button color="light" block (click)="showPosition(list)">Voir la position</button>
+  <ion-row>
+    <ion-col text-center="">
+      <button ion-button large icon-only color="light" (click)="addTodoItem(list)">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-button large icon-only (click)="listen()">
+        <ion-icon name="mic"></ion-icon>
+      </button>
+      <button *ngIf="!userDataServiceProvider.isDisconnectedMode()"
+              ion-button large icon-only color="secondary" (click)="shareTodoList(list)">
+        <ion-icon name="share"></ion-icon>
+      </button>
+      <button ion-button large icon-only color="dark" (click)="showPosition(list)">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 </ion-content>

@@ -13,25 +13,24 @@
         <ion-label>{{ item.list.name }} (à faire: {{ item.nbUncompletedItems }})</ion-label>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button (click)="deleteTodoList(item.list, slidingItem)" color="light" icon-start>
-          <ion-icon name="delete"></ion-icon>
-          Supprimer
+        <button ion-button (click)="deleteTodoList(item.list, slidingItem)" color="danger" icon-start>
+          <ion-icon name="close-circle"></ion-icon>
         </button>
         <button ion-button (click)="editTodoList(item.list, slidingItem)" icon-start>
-          <ion-icon name="edit"></ion-icon>
-          Modifier
+          <ion-icon name="create"></ion-icon>
         </button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
 
-  <button ion-button color="light" block (click)="addTodoList()">Ajouter une liste</button>
-
-  <button ion-button block (click)="listen()">
-    <div>
-      <ion-icon name="mic">
-        <label>Parle-moi</label>
-      </ion-icon>
-    </div>
-  </button>
+  <ion-row>
+    <ion-col text-center="">
+      <button ion-button large icon-only color="light" (click)="addTodoList()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-button large icon-only (click)="listen()">
+        <ion-icon name="mic"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 </ion-content>
