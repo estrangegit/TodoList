@@ -8,6 +8,7 @@ import {DatabaseServiceProvider} from '../../providers/database-service/database
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
 import {options} from '../../config/speechRecognitionConfig';
 import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
+import {MapPage} from '../map/map';
 
 @Component({
   selector: 'todo-item',
@@ -32,7 +33,9 @@ export class TodoItemPage implements OnInit{
   ngOnInit(){
     if(this.userDataServiceProvider.isLoggedIn()){
       this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
-        data => {this.list = data[0]});
+        data => {
+          this.list = data[0]
+        });
     }else if(this.userDataServiceProvider.isDisconnectedMode()){
         this.initTodoItemsFromStorage();
     }
@@ -184,4 +187,9 @@ export class TodoItemPage implements OnInit{
       )
   }
 
+  public showPosition(todoList: TodoList): void {
+    this.navCtrl.push(MapPage, {
+      uuid: todoList.uuid
+    })
+  }
 }

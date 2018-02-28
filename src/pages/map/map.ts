@@ -1,8 +1,10 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import { Geolocation } from '@ionic-native/geolocation';
-import {App} from 'ionic-angular';
+import {App, NavParams} from 'ionic-angular';
 import {LoginPage} from '../login/login';
+import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
+import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
 
 declare var google;
 
@@ -15,10 +17,26 @@ export class MapPage {
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
+  list:any;
 
   constructor(public userDataServiceProvider: UserDataServiceProvider,
+              private navParams: NavParams,
               public app: App,
-              public geolocation: Geolocation) {}
+              public geolocation: Geolocation,
+              public databaseServiceProvider: DatabaseServiceProvider,
+              public storageDataServiceProvider: StorageDataServiceProvider) {}
+
+
+  ngOnInit(){
+    if(this.userDataServiceProvider.isLoggedIn()){
+      this.databaseServiceProvider.getOneTodoList(this.navParams.get('uuid')).subscribe(
+        data => {
+          this.list = data[0]
+        });
+    }else if(this.userDataServiceProvider.isDisconnectedMode()){
+      this.initTodoItemsFromStorage();
+    }
+  }
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
@@ -39,7 +57,7 @@ export class MapPage {
 
     this.geolocation.getCurrentPosition().then((position) => {
 
-      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      let latLng = new google.maps.LatLng(this.list.position.latitude, this.list.position.longitude);
 
       let mapOptions = {
         center: latLng,
@@ -71,5 +89,10 @@ export class MapPage {
     google.maps.event.addListener(marker, 'click', () => {
       infoWindow.open(this.map, marker);
     });
+  }
+
+  private initTodoItemsFromStorage() {
+    this.storageDataServiceProvider.getOneTodoList(this.navParams.get('uuid'))
+      .then((list)=>{this.list = list});
   }
 }

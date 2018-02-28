@@ -105,5 +105,6 @@
     <allow-navigation href="http://130.190.57.230:8100" />
     <plugin name="cordova-sqlite-storage" spec="^2.2.0" />
     <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
+    <plugin name="cordova-plugin-compat" spec="^1.2.0" />
     <engine name="android" spec="~6.3.0" />
 </widget>

@@ -13,7 +13,13 @@ Etudiants:
 + Récupérer les sources sur le dépôt Github: https://github.com/estrangegitbis/todoList.git
 + Installer les dépendances: `npm install`
 + Installer une plateforme android: `ionic cordova platform add android`
-+ Compilation et lancement de l'application: `ionic cordova run android` 
++ Compilation et lancement de l'application: `ionic cordova run android`
++ Pour l'utilisation du plugin geolocation une version de la plateforme adroid avec une version supérieure à 6.3.0 est nécessaire.
+Le plugin compat doit également être mis à jour avec une version supérieurs à 1.2.0. Les lignes de commande suivantes sont nécessaires:
+  + `ionic cordova plugin rm cordova-plugin-compat --force`
+  + `ionic cordova plugin add cordova-plugin-compat@1.2`
+  + `ionic cordova platform rm android`
+  + `ionic cordova platform add android@6.3.0` 
 
 ### Détails des fonctionnalités réalisées
 + Login à l'application par compte Google.
