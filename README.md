@@ -14,8 +14,8 @@ Etudiants:
 + Installer les dépendances: `npm install`
 + Installer une plateforme android: `ionic cordova platform add android`
 + Compilation et lancement de l'application: `ionic cordova run android`
-+ Pour l'utilisation du plugin geolocation la plateforme adroid avec une version supérieure à 6.3.0 est nécessaire.
-Le plugin compat doit également être mis à jour avec une version supérieure à 1.2.0.
++ Pour l'utilisation du plugin *geolocation* la plateforme adroid avec une version supérieure à 6.3.0 est nécessaire.
+Le plugin *compat* doit également être mis à jour avec une version supérieure à 1.2.0.
 Pour réaliser ces opérations, il est possible d'utiliser les lignes de commande suivantes:
   + `ionic cordova plugin rm cordova-plugin-compat --force`
   + `ionic cordova plugin add cordova-plugin-compat@1.2`
