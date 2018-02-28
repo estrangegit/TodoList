@@ -9,7 +9,7 @@ import {options} from '../../config/speechRecognitionConfig';
 import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
 
 @Component({
-  selector: 'todo-list',
+  selector: 'page-todo-list',
   templateUrl: 'todolist.html'
 })
 export class TodoListPage {
