@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import {Storage} from '@ionic/storage';
 import 'rxjs/Rx';
+import {Geolocation} from '@ionic-native/geolocation';
 
 
 @Injectable()
 export class StorageDataServiceProvider {
 
-  constructor(private storage: Storage) {}
+  constructor(private storage: Storage,
+              public geolocation: Geolocation) {}
 
   public getTodoList(): Promise<any[]> {
     let todoLists = [];
@@ -16,9 +18,12 @@ export class StorageDataServiceProvider {
   }
 
   public newTodoList(name: String){
-    let uuid = this.createUuid();
-    let todoList = {"uuid":uuid, name: name, items: []};
-    this.storage.set(uuid, todoList);
+    return this.geolocation.getCurrentPosition().then((position) => {
+      const positionTemp = {latitude: position.coords.latitude, longitude: position.coords.longitude};
+      let uuid = this.createUuid();
+      let todoList = {"uuid":uuid, name: name, items: [], position: positionTemp};
+      return this.storage.set(uuid, todoList);
+    });
   }
 
   public deleteTodoList(todoList){

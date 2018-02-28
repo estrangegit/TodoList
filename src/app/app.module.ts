@@ -6,6 +6,7 @@ import { MyApp } from './app.component';
 import { TodoListPage } from '../pages/todolist/todolist';
 import { TodoItemPage } from '../pages/todoItem/todoItem';
 import { HomePage } from '../pages/home/home';
+import {MapPage} from '../pages/map/map';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -21,6 +22,7 @@ import { DatabaseServiceProvider } from '../providers/database-service/database-
 import {SpeechRecognition} from '@ionic-native/speech-recognition';
 import {StorageDataServiceProvider} from '../providers/storage-data-service/storage-data-service';
 import {IonicStorageModule} from '@ionic/storage';
+import { Geolocation } from '@ionic-native/geolocation';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
@@ -40,7 +42,8 @@ export const firebaseConfig = {
     TabsPage,
     ModalContentPage,
     LoginPage,
-    ProfilePage
+    ProfilePage,
+    MapPage
   ],
   imports: [
     BrowserModule,
@@ -58,7 +61,8 @@ export const firebaseConfig = {
     TabsPage,
     ModalContentPage,
     LoginPage,
-    ProfilePage
+    ProfilePage,
+    MapPage
   ],
   providers: [
     StatusBar,
@@ -67,6 +71,7 @@ export const firebaseConfig = {
     StorageDataServiceProvider,
     UserDataServiceProvider,
     SpeechRecognition,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DatabaseServiceProvider
   ]

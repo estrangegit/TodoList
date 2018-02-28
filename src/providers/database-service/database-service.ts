@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {TodoList} from '../../model/model';
 import * as firebase from 'firebase/app';
 import {UserDataServiceProvider} from '../user-data-service/user-data-service';
+import {Geolocation} from '@ionic-native/geolocation';
 
 @Injectable()
 export class DatabaseServiceProvider {
@@ -16,6 +17,7 @@ export class DatabaseServiceProvider {
   private _pathRoot: string = '';
 
   constructor(public afDatabase: AngularFireDatabase,
+              public geolocation: Geolocation,
               public userDataServiceProvider: UserDataServiceProvider) {
     this._pathRoot = '/users';
     this._rootRef = firebase.database().ref('/users');
@@ -100,29 +102,35 @@ export class DatabaseServiceProvider {
   public newTodoList(name: String){
 
     let uuid = this.createUuid();
-    let todoList = {"uuid":uuid, name: name, items: false};
 
-    this._todoRef.push(todoList).then(()=>
-    {
-      firebase.database().ref(this._pathUser).once('value').then((data)=>{
-        const Lists = data.val();
-        let ownListsTemp = [];
-        let shareListsTemp = [];
-        if(Lists!=null){
-          if(typeof Lists.own != 'undefined')
-            ownListsTemp=Lists.own;
-          if(typeof  Lists.share != 'undefined')
-            shareListsTemp=Lists.share;
-        }
+    this.geolocation.getCurrentPosition().then((position) => {
 
-        ownListsTemp.push(uuid);
+      const positionTemp = {latitude: position.coords.latitude, longitude: position.coords.longitude};
 
-        this._todoUserRef.set({
-          own: ownListsTemp,
-          share: shareListsTemp,
-          email: this.userDataServiceProvider.getUserProfile().providerData[0].email
-        });
-      })
+      let todoList = {"uuid":uuid, name: name, items: false, position: positionTemp};
+
+      this._todoRef.push(todoList).then(()=>
+      {
+        firebase.database().ref(this._pathUser).once('value').then((data)=>{
+          const Lists = data.val();
+          let ownListsTemp = [];
+          let shareListsTemp = [];
+          if(Lists!=null){
+            if(typeof Lists.own != 'undefined')
+              ownListsTemp=Lists.own;
+            if(typeof  Lists.share != 'undefined')
+              shareListsTemp=Lists.share;
+          }
+
+          ownListsTemp.push(uuid);
+
+          this._todoUserRef.set({
+            own: ownListsTemp,
+            share: shareListsTemp,
+            email: this.userDataServiceProvider.getUserProfile().providerData[0].email,
+          });
+        })
+      });
     });
   }
 
@@ -184,7 +192,8 @@ export class DatabaseServiceProvider {
           snapChild.ref.set({
             name: todoList.name,
             uuid: todoList.uuid,
-            items: todoList.items
+            items: todoList.items,
+            position: todoList.position
           });
         });
       })
