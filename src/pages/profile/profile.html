@@ -16,9 +16,13 @@
     </ion-item>
   </ion-list>
 
-  <button ion-button block (click)="googleLogout()">
-    GOOGLE LOGOUT
-  </button>
+  <ion-row>
+    <ion-col text-center="">
+      <button ion-button large icon-only (click)="googleLogout()">
+        <ion-icon name="log-out"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 </ion-content>
 
 <ion-content padding *ngIf="userDataServiceProvider.isDisconnectedMode()">
@@ -27,7 +31,12 @@
       <h2>Vous êtes actuellement déconnecté</h2>
     </ion-item>
   </ion-list>
-  <button ion-button block (click)="connectedMode()">
-    Passer en mode connecté
-  </button>
+
+  <ion-row>
+    <ion-col text-center="">
+      <button ion-button large icon-only (click)="connectedMode()">
+        <ion-icon name="log-in"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 </ion-content>
