@@ -192,7 +192,8 @@ export class DatabaseServiceProvider {
           snapChild.ref.set({
             name: todoList.name,
             uuid: todoList.uuid,
-            items: todoList.items
+            items: todoList.items,
+            position: todoList.position
           });
         });
       })
