@@ -13,36 +13,32 @@
           <ion-label>{{ item.name }}</ion-label>
           <ion-toggle (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-toggle>
         </ion-item>
-        <ion-item-options side="left">
-            <button ion-button (click)="deleteTodoItem(item.list, slidingItem)" color="danger">
-              <ion-icon name="close-circle"></ion-icon>
-            </button>
-            
-          </ion-item-options>
-          <ion-item-options side="right">
-            <button ion-button (click)="editTodoItem(item.list, slidingItem)">
-                <ion-icon name="create"></ion-icon>
-            </button>
-          </ion-item-options>
+        <ion-item-options side="right">
+          <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="danger" icon-start>
+            <ion-icon name="close-circle"></ion-icon>
+          </button>
+          <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
+            <ion-icon name="create"></ion-icon>
+          </button>
+        </ion-item-options>
       </ion-item-sliding>
     </ion-list>
 
-  <ion-fab bottom right>
-    <button ion-fab color="blue"  (click)="addTodoItem(list)">
-      <ion-icon name="add"></ion-icon>
-    </button>
-  </ion-fab>
-
-  <ion-fab bottom left>
-      <button ion-fab color="blue"  (click)="listen()">
+  <ion-row>
+    <ion-col text-center>
+      <button ion-button large icon-only color="light" (click)="addTodoItem(list)">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-button large icon-only (click)="listen()">
         <ion-icon name="mic"></ion-icon>
       </button>
-  </ion-fab>
-
-  <ion-fab bottom center>
-      <button ion-fab color="blue"  (click)="shareTodoList(list)">
+      <button *ngIf="!userDataServiceProvider.isDisconnectedMode()"
+              ion-button large icon-only color="secondary" (click)="shareTodoList(list)">
         <ion-icon name="share"></ion-icon>
       </button>
-  </ion-fab>
-
+      <button ion-button large icon-only color="dark" (click)="showPosition(list)">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
 </ion-content>

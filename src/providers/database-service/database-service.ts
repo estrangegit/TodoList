@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {TodoList} from '../../model/model';
 import * as firebase from 'firebase/app';
 import {UserDataServiceProvider} from '../user-data-service/user-data-service';
+import {Geolocation} from '@ionic-native/geolocation';
 
 @Injectable()
 export class DatabaseServiceProvider {
@@ -16,17 +17,17 @@ export class DatabaseServiceProvider {
   private _pathRoot: string = '';
 
   constructor(public afDatabase: AngularFireDatabase,
+              public geolocation: Geolocation,
               public userDataServiceProvider: UserDataServiceProvider) {
     this._pathRoot = '/users';
     this._rootRef = firebase.database().ref('/users');
   }
 
   public getTodoList(): any {
-    return Observable.fromPromise(firebase.database().ref(this._path).once('value').then((data)=>{
+    firebase.database().ref(this._path).once('value').then((data)=>{
       const todoLists =  data.val();
-      return firebase.database().ref(this._pathUser).once('value').then((data)=>{
+      firebase.database().ref(this._pathUser).once('value').then((data)=>{
         const Lists = data.val();
-        let todoList = [];
 
         //Permet d'enlever les listes utilisateurs qui n'existent plus
         let tempAllTodoUuid = [];
@@ -60,48 +61,77 @@ export class DatabaseServiceProvider {
           share: shareLists,
           email: this.userDataServiceProvider.getUserProfile().providerData[0].email
         });
+      })
+    });
 
-        //Récupère l'ensemble des listes des utilisateurs
-        if(Lists != null){
-          for(let listId in todoLists){
-            if(ownLists.indexOf(todoLists[listId].uuid) !=-1){
-              todoList.push(todoLists[listId]);
-            }
-            if(shareLists.indexOf(todoLists[listId].uuid) !=-1){
-              todoList.push(todoLists[listId]);
-            }
+    //Récupère l'ensemble des listes des utilisateurs et écoute les modifications sur celles-ci
+    return this.afDatabase.list(this._path).valueChanges().map((data) => {
+      const todoLists =  data;
+
+      return Observable.combineLatest(this.afDatabase.list(this._pathUser + '/own', ).valueChanges().map((data) => {
+
+        let ownLists =  data;
+        let todoList = [];
+
+        //Récupère les listes dont l'utilisateur est propriétaire
+        for(let listId in todoLists){
+          if(ownLists.indexOf(todoLists[listId]['uuid']) !=-1){
+            todoList.push(todoLists[listId]);
           }
         }
 
         return todoList;
-      })
-    }));
+      }),
+        this.afDatabase.list(this._pathUser + '/share', ).valueChanges().map((data) => {
+
+          let shareLists =  data;
+          let todoList = [];
+
+          //Récupère les listes qui sont partagées avec l'utilisateur
+          for(let listId in todoLists){
+            if(shareLists.indexOf(todoLists[listId]['uuid']) !=-1){
+              todoList.push(todoLists[listId]);
+            }
+          }
+
+          return todoList;
+        }));
+    });
   }
 
   public newTodoList(name: String){
 
     let uuid = this.createUuid();
-    let todoList = {"uuid":uuid, name: name, items: false};
 
-    this._todoRef.push(todoList);
+    this.geolocation.getCurrentPosition().then((position) => {
 
-    firebase.database().ref(this._pathUser).once('value').then((data)=>{
-      const Lists = data.val();
-      let ownListsTemp = [];
-      let shareListsTemp = [];
-      if(Lists!=null){
-        if(typeof Lists.own != 'undefined')
-          ownListsTemp=Lists.own;
-        if(typeof  Lists.share != 'undefined')
-          shareListsTemp=Lists.share;
-      }
-      ownListsTemp.push(uuid);
-      this._todoUserRef.set({
-        own: ownListsTemp,
-        share: shareListsTemp,
-        email: this.userDataServiceProvider.getUserProfile().providerData[0].email
-      })
-    })
+      const positionTemp = {latitude: position.coords.latitude, longitude: position.coords.longitude};
+
+      let todoList = {"uuid":uuid, name: name, items: false, position: positionTemp};
+
+      this._todoRef.push(todoList).then(()=>
+      {
+        firebase.database().ref(this._pathUser).once('value').then((data)=>{
+          const Lists = data.val();
+          let ownListsTemp = [];
+          let shareListsTemp = [];
+          if(Lists!=null){
+            if(typeof Lists.own != 'undefined')
+              ownListsTemp=Lists.own;
+            if(typeof  Lists.share != 'undefined')
+              shareListsTemp=Lists.share;
+          }
+
+          ownListsTemp.push(uuid);
+
+          this._todoUserRef.set({
+            own: ownListsTemp,
+            share: shareListsTemp,
+            email: this.userDataServiceProvider.getUserProfile().providerData[0].email,
+          });
+        })
+      });
+    });
   }
 
   public deleteTodoList(todoList : TodoList) {
@@ -162,7 +192,8 @@ export class DatabaseServiceProvider {
           snapChild.ref.set({
             name: todoList.name,
             uuid: todoList.uuid,
-            items: todoList.items
+            items: todoList.items,
+            position: todoList.position
           });
         });
       })
