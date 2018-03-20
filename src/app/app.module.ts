@@ -23,14 +23,15 @@ import {SpeechRecognition} from '@ionic-native/speech-recognition';
 import {StorageDataServiceProvider} from '../providers/storage-data-service/storage-data-service';
 import {IonicStorageModule} from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
+import {firebaseConfigurationParams} from '../config/firebaseConfig';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
-  authDomain: "todolist-7301c.firebaseapp.com",
-  databaseURL: "https://todolist-7301c.firebaseio.com",
-  projectId: "todolist-7301c",
-  storageBucket: "todolist-7301c.appspot.com",
-  messagingSenderId: "724673715119"
+  apiKey: firebaseConfigurationParams.apiKey,
+  authDomain: firebaseConfigurationParams.authDomain,
+  databaseURL: firebaseConfigurationParams.databaseURL,
+  projectId: firebaseConfigurationParams.projectId,
+  storageBucket: firebaseConfigurationParams.storageBucket,
+  messagingSenderId: firebaseConfigurationParams.messagingSenderId
 };
 
 @NgModule({
