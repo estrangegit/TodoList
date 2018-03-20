@@ -4,6 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as firebase from 'firebase/app';
 import {LoginPage} from '../pages/login/login';
+import {firebaseConfigurationParams} from '../config/firebaseConfig';
 
 @Component({
   templateUrl: 'app.html'
@@ -14,12 +15,12 @@ export class MyApp {
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
 
     firebase.initializeApp({
-      apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
-      authDomain: "todolist-7301c.firebaseapp.com",
-      databaseURL: "https://todolist-7301c.firebaseio.com",
-      projectId: "todolist-7301c",
-      storageBucket: "todolist-7301c.appspot.com",
-      messagingSenderId: "724673715119"
+      apiKey: firebaseConfigurationParams.apiKey,
+      authDomain: firebaseConfigurationParams.authDomain,
+      databaseURL: firebaseConfigurationParams.databaseURL,
+      projectId: firebaseConfigurationParams.projectId,
+      storageBucket: firebaseConfigurationParams.storageBucket,
+      messagingSenderId: firebaseConfigurationParams.messagingSenderId
     });
 
     platform.ready().then(() => {
