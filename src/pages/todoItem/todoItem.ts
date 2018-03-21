@@ -100,7 +100,7 @@ export class TodoItemPage implements OnInit{
   }
 
   public addTodoItem(todoList:TodoList){
-    let todoItem = <TodoItem>{uuid:'', name:'', complete:false};
+    let todoItem = <TodoItem>{uuid:'', name:'', complete:false, imgDataUrl: ""};
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
   }

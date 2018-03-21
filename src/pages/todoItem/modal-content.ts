@@ -39,9 +39,6 @@ export class ModalContentPage {
   }
 
   public save(){
-    if(this.captureDataUrl){
-      this.todoItem.imgDataUrl = this.captureDataUrl;
-    }
     if(this.newTodoItem){
       if(this.userDataServiceProvider.isLoggedIn()){
         this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
@@ -67,13 +64,17 @@ export class ModalContentPage {
   takePicture(){
     const options: CameraOptions = {
       quality: 100,
+      targetWidth: 100,
+      targetHeight: 100,
+      correctOrientation: true,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
-    }
-    this.camera.getPicture(options).then((imageData) => 
+    };
+
+    this.camera.getPicture(options).then((imageData) =>
     {
-      this.captureDataUrl = 'data:image/jpeg;base64,' + imageData;
+      this.todoItem.imgDataUrl = 'data:image/jpeg;base64,' + imageData;
 
     }, (err) => {
       console.error('image pas prise'+ err);

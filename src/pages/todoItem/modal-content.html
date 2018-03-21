@@ -3,7 +3,7 @@
   <ion-title>
     Nouvel item
   </ion-title>
-  
+
   <ion-buttons start>
     <button ion-button (click)="dismiss()">
       <span ion-text color="primary" showWhen="ios">Cancel</span>
@@ -23,13 +23,22 @@
       <ion-label>Effectué</ion-label>
       <ion-toggle [(ngModel)]="todoItem.complete"></ion-toggle>
     </ion-item>
-    <ion-item>
-      <button ion-button (click)="takePicture()">Photo</button>
-      <img [src]="todoItem.imgDataUrl" *ngIf="todoItem.imgDataUrl"/>
-    </ion-item>
+    <ion-list *ngIf="todoItem.imgDataUrl; else elseIonItem" >
+      <ion-item>
+        <img [src]="todoItem.imgDataUrl"/>
+      </ion-item>
+      <ion-item>
+        <button ion-button (click)="takePicture()">Modifier la photo</button>
+      </ion-item>
+    </ion-list>
+    <ng-template #elseIonItem>
+      <ion-item>
+        <button ion-button (click)="takePicture()">Ajouter une photo</button>
+      </ion-item>
+    </ng-template>
   </ion-list>
 </ion-content>
 <ion-footer>
-  <button ion-button round large color="light" (click)="cancel()">Annuler</button>
-  <button ion-button round large (click)="save()">Enregistrer</button>
+  <button ion-button color="light" (click)="cancel()">Annuler</button>
+  <button ion-button (click)="save()">Enregistrer</button>
 </ion-footer>

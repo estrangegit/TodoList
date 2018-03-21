@@ -10,11 +10,11 @@
     <ion-list *ngIf="list && list.items">
       <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
         <ion-item>
-          <ion-thumbnail item-start>
-            <img [src]="item.imgDataUrl" *ngIf="item.imgDataUrl"/>
-          </ion-thumbnail>
           <ion-label>{{ item.name }}</ion-label>
           <ion-checkbox (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-checkbox>
+          <ion-thumbnail item-end>
+            <img [src]="item.imgDataUrl" *ngIf="item.imgDataUrl"/>
+          </ion-thumbnail>
         </ion-item>
         <ion-item-options side="right">
           <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="danger" icon-start>
@@ -27,7 +27,7 @@
       </ion-item-sliding>
     </ion-list>
 
-  <ion-footer>  
+  <ion-footer>
     <ion-row>
       <ion-col text-center>
         <button ion-button large icon-only color="light" (click)="addTodoItem(list)">
