@@ -25,7 +25,7 @@ import {IonicStorageModule} from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
 import {firebaseConfigurationParams} from '../config/firebaseConfig';
 
-import { Camera } from '@ionic-native/camera'
+import { Camera } from '@ionic-native/camera';
 
 export const firebaseConfig = {
   apiKey: firebaseConfigurationParams.apiKey,
