@@ -2,22 +2,28 @@ import { Component } from '@angular/core';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {App, ToastController} from 'ionic-angular';
 import {LoginPage} from '../login/login';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 
+
+
 export class HomePage {
   constructor(
     public userDataServiceProvider: UserDataServiceProvider,
     public app: App,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private camera: Camera
   ) 
   {
-
+    
+    
   }
 
+  
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
     let disconnectedMode = this.userDataServiceProvider.isDisconnectedMode();
@@ -28,15 +34,10 @@ export class HomePage {
       return true;
     }
   }
-
-  showToast(){
-    this.toastCtrl.create({
-      message: 'User was added successfully',
-      duration: 3000,
-      position: 'top'
-    }).present();
-  }
-
-
-
+  
+  
+  
+  
+  
 }
+    

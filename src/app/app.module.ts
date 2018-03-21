@@ -24,6 +24,8 @@ import {StorageDataServiceProvider} from '../providers/storage-data-service/stor
 import {IonicStorageModule} from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
 
+import { Camera } from '@ionic-native/camera'
+
 export const firebaseConfig = {
   apiKey: "AIzaSyD8fYOyuvGQVJhyY4mN_QAUPIy8IyMPk44",
   authDomain: "todolist-7301c.firebaseapp.com",
@@ -73,7 +75,8 @@ export const firebaseConfig = {
     SpeechRecognition,
     Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DatabaseServiceProvider
+    DatabaseServiceProvider,
+    Camera
   ]
 })
 export class AppModule {}
