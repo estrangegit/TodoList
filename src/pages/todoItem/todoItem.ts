@@ -79,7 +79,12 @@ export class TodoItemPage implements OnInit{
   }
 
   public editTodoItem(todoList:TodoList, todoItem:TodoItem, slidingItem: ItemSliding): void{
-    let todoItemTemp = <TodoItem>{uuid:todoItem.uuid, name:todoItem.name, complete:todoItem.complete};
+    let todoItemTemp = <TodoItem>{
+      uuid:todoItem.uuid,
+      name:todoItem.name,
+      complete:todoItem.complete,
+      imgDataUrl:todoItem.imgDataUrl,
+    };
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItemTemp});
     modal.present();
 

@@ -4,6 +4,7 @@ import {Component} from '@angular/core';
 import {DatabaseServiceProvider} from '../../providers/database-service/database-service';
 import {UserDataServiceProvider} from '../../providers/user-data-service/user-data-service';
 import {StorageDataServiceProvider} from '../../providers/storage-data-service/storage-data-service';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 @Component({
   templateUrl: 'modal-content.html'
@@ -13,6 +14,7 @@ export class ModalContentPage {
   todoItem:TodoItem;
   todoList:TodoList;
   newTodoItem: boolean = false;
+  captureDataUrl: string;
 
   constructor(
     public platform: Platform,
@@ -20,7 +22,9 @@ export class ModalContentPage {
     public viewCtrl: ViewController,
     public databaseServiceProvider: DatabaseServiceProvider,
     public userDataServiceProvider: UserDataServiceProvider,
-    public storageDataServiceProvider: StorageDataServiceProvider) {
+    public storageDataServiceProvider: StorageDataServiceProvider,
+    private camera: Camera
+  ) {
 
     this.todoItem = this.params.get('todoItem');
     this.todoList = this.params.get('todoList');
@@ -35,6 +39,9 @@ export class ModalContentPage {
   }
 
   public save(){
+    if(this.captureDataUrl){
+      this.todoItem.imgDataUrl = this.captureDataUrl;
+    }
     if(this.newTodoItem){
       if(this.userDataServiceProvider.isLoggedIn()){
         this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
@@ -55,5 +62,21 @@ export class ModalContentPage {
 
   dismiss() {
     this.viewCtrl.dismiss();
+  }
+
+  takePicture(){
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE
+    }
+    this.camera.getPicture(options).then((imageData) => 
+    {
+      this.captureDataUrl = 'data:image/jpeg;base64,' + imageData;
+
+    }, (err) => {
+      console.error('image pas prise'+ err);
+    });
   }
 }
