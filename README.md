@@ -30,6 +30,7 @@ Pour réaliser ces opérations, il est possible d'utiliser les lignes de command
 + L'application est accessible en mode connecté et en mode déconnecté.
 + Possibilité de partager des listes entre les utilisateurs grâce à leur email
 + Possibilité de visualiser la position à laquelle la liste à été créée
++ Possibilté de joindre une photo à un item
 
 ### Détails des spécificités de l'application
 + Les informations sont stockées sur une base de données accessible en ligne au travers du service *firebase*.
@@ -37,3 +38,5 @@ Pour réaliser ces opérations, il est possible d'utiliser les lignes de command
 + Le mode déconnecté permet à l'utilisateur de stocker l'ensemble des informations dans une base de données SQlite.
 + Le partage d'une liste donne tous les droits (édition, suppression) à ceux avec lesquels elle est partagée.
 + A la création d'une liste, la position de l'appareil est enregistrée en base de données
++ Une photo peut être ajoutée lors de l'édition d'un item. La photo est stockée dans le storage de firebase pour la 
+version connectée de l'application. La version hors-ligne stocke directement l'image en base de données au format base64.
