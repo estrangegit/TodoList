@@ -67,8 +67,11 @@ export class TodoItemPage implements OnInit{
         {
           text: 'Confirmer',
           handler: () => {
-            if(this.userDataServiceProvider.isLoggedIn())
+            if(this.userDataServiceProvider.isLoggedIn()){
               this.databaseServiceProvider.deleteTodoItem(todoList, todoItem);
+              if(todoItem.imgDataUrl)
+                this.databaseServiceProvider.deletePicture(todoList.uuid, todoItem.uuid);
+            }
             else if(this.userDataServiceProvider.isDisconnectedMode())
               this.storageDataServiceProvider.deleteTodoItem(todoList, todoItem);
           }
@@ -79,7 +82,12 @@ export class TodoItemPage implements OnInit{
   }
 
   public editTodoItem(todoList:TodoList, todoItem:TodoItem, slidingItem: ItemSliding): void{
-    let todoItemTemp = <TodoItem>{uuid:todoItem.uuid, name:todoItem.name, complete:todoItem.complete};
+    let todoItemTemp = <TodoItem>{
+      uuid:todoItem.uuid,
+      name:todoItem.name,
+      complete:todoItem.complete,
+      imgDataUrl:todoItem.imgDataUrl,
+    };
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItemTemp});
     modal.present();
 
@@ -95,7 +103,7 @@ export class TodoItemPage implements OnInit{
   }
 
   public addTodoItem(todoList:TodoList){
-    let todoItem = <TodoItem>{uuid:'', name:'', complete:false};
+    let todoItem = <TodoItem>{uuid:'', name:'', complete:false, imgDataUrl: ""};
     let modal = this.modalCtrl.create(ModalContentPage, {todoList:todoList, todoItem:todoItem});
     modal.present();
   }
@@ -147,9 +155,10 @@ export class TodoItemPage implements OnInit{
 
           if(firstWord.toLowerCase()=='ajouter'){
             itemName = itemName.charAt(0).toUpperCase() + itemName.slice(1);
-            let todoItem = <TodoItem>{uuid:'', name:itemName, complete:false};
+            let todoItem = <TodoItem>{uuid:'', name:itemName, complete:false, imgDataUrl: ""};
 
             if(this.userDataServiceProvider.isLoggedIn()){
+              todoItem.uuid = this.databaseServiceProvider.createUuid();
               this.databaseServiceProvider.newTodoItem(this.list, todoItem);
             }else if(this.userDataServiceProvider.isDisconnectedMode()){
               this.storageDataServiceProvider.newTodoItem(this.list, todoItem);
@@ -165,10 +174,19 @@ export class TodoItemPage implements OnInit{
             for(let i = 0; i < itemNames.length && !abort; i++){
               for(let j = 0; j < this.list.items.length && !abort; j++){
                 if(itemNames[i].toLowerCase()==this.list.items[j].name.toLowerCase()){
-                  if(this.userDataServiceProvider.isLoggedIn())
-                    this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
-                  else if(this.userDataServiceProvider.isDisconnectedMode())
+                  if(this.userDataServiceProvider.isLoggedIn()){
+                    if(this.list.items[j].imgDataUrl){
+                      this.databaseServiceProvider.deletePicture(this.list.uuid, this.list.items[j].uuid)
+                        .then(()=>{
+                          this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                        });
+                    }else{
+                      this.databaseServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                    }
+                  }
+                  else if(this.userDataServiceProvider.isDisconnectedMode()){
                     this.storageDataServiceProvider.deleteTodoItem(this.list, this.list.items[j]);
+                  }
                   abort = true;
                 }
               }

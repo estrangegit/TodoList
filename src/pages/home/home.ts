@@ -9,8 +9,11 @@ import {LoginPage} from '../login/login';
 })
 
 export class HomePage {
-  constructor(public userDataServiceProvider: UserDataServiceProvider,
-              public app: App) {}
+  constructor(
+    public userDataServiceProvider: UserDataServiceProvider,
+    public app: App
+  ){}
+
 
   ionViewCanEnter(): boolean {
     let loggedIn = this.userDataServiceProvider.isLoggedIn();
@@ -22,5 +25,4 @@ export class HomePage {
       return true;
     }
   }
-
 }
