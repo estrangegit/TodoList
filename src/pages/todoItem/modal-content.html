@@ -23,12 +23,13 @@
       <ion-label>Effectué</ion-label>
       <ion-toggle [(ngModel)]="todoItem.complete"></ion-toggle>
     </ion-item>
-    <ion-list *ngIf="todoItem.imgDataUrl; else elseIonItem" >
+    <ion-list *ngIf="captureDataUrl; else elseIonItem" >
       <ion-item>
-        <img [src]="todoItem.imgDataUrl"/>
+        <img [src]="captureDataUrl"/>
       </ion-item>
       <ion-item>
         <button ion-button (click)="takePicture()">Modifier la photo</button>
+        <button ion-button (click)="deletePicture()">Supprimer la photo</button>
       </ion-item>
     </ion-list>
     <ng-template #elseIonItem>

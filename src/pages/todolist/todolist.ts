@@ -197,8 +197,9 @@ export class TodoListPage {
                 this.databaseServiceProvider.newTodoList(listName);
               }
               else if(this.userDataServiceProvider.isDisconnectedMode()){
-                this.storageDataServiceProvider.newTodoList(listName);
-                this.initTodoListsFromStorage();
+                this.storageDataServiceProvider.newTodoList(listName).then(()=>{
+                  this.initTodoListsFromStorage();
+                });
               }
             }else if(firstWord.toLowerCase()=='supprimer'){
 

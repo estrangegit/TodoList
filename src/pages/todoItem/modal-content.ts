@@ -14,7 +14,8 @@ export class ModalContentPage {
   todoItem:TodoItem;
   todoList:TodoList;
   newTodoItem: boolean = false;
-  captureDataUrl: string;
+  captureDataUrl: String = "";
+  pictureDeleted: boolean = false;
 
   constructor(
     public platform: Platform,
@@ -25,13 +26,16 @@ export class ModalContentPage {
     public storageDataServiceProvider: StorageDataServiceProvider,
     private camera: Camera
   ) {
-
     this.todoItem = this.params.get('todoItem');
     this.todoList = this.params.get('todoList');
 
     if(this.todoItem.uuid.length == 0){
       this.newTodoItem = true;
+      this.todoItem.uuid = this.databaseServiceProvider.createUuid();
     }
+
+    if(this.todoItem.imgDataUrl)
+      this.captureDataUrl = this.todoItem.imgDataUrl;
   }
 
   public cancel(){
@@ -46,11 +50,29 @@ export class ModalContentPage {
       else if(this.userDataServiceProvider.isDisconnectedMode()){
         this.storageDataServiceProvider.newTodoItem(this.todoList, this.todoItem);
       }
-    }
-    else{
+    }else{
       if(this.userDataServiceProvider.isLoggedIn()){
-        this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+        if(this.captureDataUrl){
+          this.databaseServiceProvider.uploadImage(this.captureDataUrl,
+            this.todoList.uuid,
+            this.todoItem.uuid)
+            .then((snapshot)=>{
+              this.todoItem.imgDataUrl = snapshot.downloadURL;
+              this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+            });
+        }else{
+          if(this.pictureDeleted){
+            this.databaseServiceProvider.deletePicture(this.todoList.uuid, this.todoItem.uuid)
+              .then(()=>{
+                this.todoItem.imgDataUrl = "";
+                this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+              });
+          }else{
+            this.databaseServiceProvider.editTodoItem(this.todoList, this.todoItem);
+          }
+        }
       }else if(this.userDataServiceProvider.isDisconnectedMode()){
+        this.todoItem.imgDataUrl = this.captureDataUrl;
         this.storageDataServiceProvider.editTodoItem(this.todoList, this.todoItem);
       }
     }
@@ -64,8 +86,8 @@ export class ModalContentPage {
   takePicture(){
     const options: CameraOptions = {
       quality: 100,
-      targetWidth: 100,
-      targetHeight: 100,
+      targetWidth: 320,
+      targetHeight: 240,
       correctOrientation: true,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
@@ -74,10 +96,15 @@ export class ModalContentPage {
 
     this.camera.getPicture(options).then((imageData) =>
     {
-      this.todoItem.imgDataUrl = 'data:image/jpeg;base64,' + imageData;
+      this.captureDataUrl = 'data:image/jpeg;base64,' + imageData;
 
     }, (err) => {
-      console.error('image pas prise'+ err);
+      console.error(err);
     });
+  }
+
+  deletePicture(){
+    this.pictureDeleted = true;
+    this.captureDataUrl = "";
   }
 }

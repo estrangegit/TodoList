@@ -7,43 +7,43 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-list *ngIf="list && list.items">
-      <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
-        <ion-item>
-          <ion-label>{{ item.name }}</ion-label>
-          <ion-checkbox (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-checkbox>
-          <ion-thumbnail item-end>
-            <img [src]="item.imgDataUrl" *ngIf="item.imgDataUrl"/>
-          </ion-thumbnail>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="danger" icon-start>
-            <ion-icon name="close-circle"></ion-icon>
-          </button>
-          <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
-            <ion-icon name="create"></ion-icon>
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-  <ion-footer>
-    <ion-row>
-      <ion-col text-center>
-        <button ion-button large icon-only color="light" (click)="addTodoItem(list)">
-          <ion-icon name="add"></ion-icon>
+  <ion-list *ngIf="list && list.items">
+    <ion-item-sliding *ngFor="let item of list.items" #slidingItem>
+      <ion-item>
+        <ion-label>{{ item.name }}</ion-label>
+        <ion-checkbox (ionChange)="toggle(list)" [(ngModel)]="item.complete"></ion-checkbox>
+        <ion-thumbnail item-end>
+          <img [src]="item.imgDataUrl" *ngIf="item.imgDataUrl"/>
+        </ion-thumbnail>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button (click)="deleteTodoItem(list, item, slidingItem)" color="danger" icon-start>
+          <ion-icon name="close-circle"></ion-icon>
         </button>
-        <button ion-button large icon-only (click)="listen()">
-          <ion-icon name="mic"></ion-icon>
+        <button ion-button (click)="editTodoItem(list, item, slidingItem)" icon-start>
+          <ion-icon name="create"></ion-icon>
         </button>
-        <button *ngIf="!userDataServiceProvider.isDisconnectedMode()"
-                ion-button large icon-only color="secondary" (click)="shareTodoList(list)">
-          <ion-icon name="share"></ion-icon>
-        </button>
-        <button ion-button large icon-only color="dark" (click)="showPosition(list)">
-          <ion-icon name="locate"></ion-icon>
-        </button>
-      </ion-col>
-    </ion-row>
-  </ion-footer>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col text-center>
+      <button ion-button large icon-only color="light" (click)="addTodoItem(list)">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-button large icon-only (click)="listen()">
+        <ion-icon name="mic"></ion-icon>
+      </button>
+      <button *ngIf="!userDataServiceProvider.isDisconnectedMode()"
+              ion-button large icon-only color="secondary" (click)="shareTodoList(list)">
+        <ion-icon name="share"></ion-icon>
+      </button>
+      <button ion-button large icon-only color="dark" (click)="showPosition(list)">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-footer>
