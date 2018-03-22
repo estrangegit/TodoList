@@ -1,7 +1,8 @@
 export interface TodoItem {
   uuid?: String;
   name: String;
-  complete?: Boolean
+  complete?: Boolean;
+  imgDataUrl?: String
 }
 
 export interface TodoList {

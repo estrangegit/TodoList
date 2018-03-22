@@ -246,8 +246,6 @@ export class DatabaseServiceProvider {
 
   public newTodoItem(todoList, todoItem){
 
-    todoItem.uuid = this.createUuid();
-
     if(todoList.items == false){
       todoList.items = [];
     }
@@ -273,7 +271,7 @@ export class DatabaseServiceProvider {
     this.editTodoList(todoList);
   }
 
-  private createUuid(): String{
+  public createUuid(): String{
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
@@ -290,5 +288,40 @@ export class DatabaseServiceProvider {
     let pathUser = '/users/' + uid;
     this._todoRef = firebase.database().ref(path);
     this._todoUserRef = firebase.database().ref(pathUser);
+  }
+
+  uploadImage(imageString, todoListUuid, todoItemUuid) : Promise<any>
+  {
+    let image : string  = 'picture-' + todoListUuid + '-' + todoItemUuid + '.jpg';
+    let storageRef : any;
+    let parseUpload : any;
+
+    storageRef = firebase.storage().ref('pictures/' + image);
+    parseUpload = storageRef.putString(imageString, 'data_url');
+
+    return new Promise((resolve, reject) =>
+    {
+      storageRef = firebase.storage().ref('pictures/' + image);
+      parseUpload = storageRef.putString(imageString, 'data_url');
+
+      parseUpload.on('state_changed', (_snapshot) =>
+        {},
+        (_err) =>
+        {
+          reject(_err);
+        },
+        (success) =>
+        {
+          resolve(parseUpload.snapshot);
+        });
+    });
+  }
+
+  deletePicture(todoListUuid, todoItemUuid) : Promise<any>{
+    let image : string  = 'picture-' + todoListUuid + '-' + todoItemUuid + '.jpg';
+    let storageRef : any;
+
+    storageRef = firebase.storage().ref('pictures/' + image);
+    return storageRef.delete();
   }
 }
