@@ -45,9 +45,20 @@ export class ModalContentPage {
   public save(){
     if(this.newTodoItem){
       if(this.userDataServiceProvider.isLoggedIn()){
-        this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
+        if(this.captureDataUrl){
+          this.databaseServiceProvider.uploadImage(this.captureDataUrl,
+            this.todoList.uuid,
+            this.todoItem.uuid)
+            .then((snapshot)=>{
+              this.todoItem.imgDataUrl = snapshot.downloadURL;
+              this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
+            });
+        }else{
+          this.databaseServiceProvider.newTodoItem(this.todoList, this.todoItem);
+        }
       }
       else if(this.userDataServiceProvider.isDisconnectedMode()){
+        this.todoItem.imgDataUrl = this.captureDataUrl;
         this.storageDataServiceProvider.newTodoItem(this.todoList, this.todoItem);
       }
     }else{
